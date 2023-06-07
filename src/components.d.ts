@@ -10,6 +10,10 @@ export namespace Components {
         "img"?: HTMLImageElement;
     }
 }
+export interface ImageCropperCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLImageCropperElement;
+}
 declare global {
     interface HTMLImageCropperElement extends Components.ImageCropper, HTMLStencilElement {
     }
@@ -24,6 +28,8 @@ declare global {
 declare namespace LocalJSX {
     interface ImageCropper {
         "img"?: HTMLImageElement;
+        "onCanceled"?: (event: ImageCropperCustomEvent<void>) => void;
+        "onConfirmed"?: (event: ImageCropperCustomEvent<void>) => void;
     }
     interface IntrinsicElements {
         "image-cropper": ImageCropper;

@@ -44,6 +44,10 @@
     </div>
   </body>
   <script>
+    window.onload = function(){
+      registerEventsForCropper();
+    }
+
     function loadImageFromFile() { 
       let files = document.getElementById('file').files;
       if (files.length == 0) {
@@ -60,8 +64,22 @@
       fileReader.readAsDataURL(file);
     }
 
+    function registerEventsForCropper(){
+      console.log("register events");
+      let cropper = document.querySelector("image-cropper");
+      const canceled = () => {
+        document.getElementById("cropper").style.display = "none";
+      }
+      const confirmed = () => {
+        document.getElementById("cropper").style.display = "none";
+      }
+      cropper.addEventListener("canceled",canceled);
+      cropper.addEventListener("confirmed",confirmed);
+    }
+
     function openCropper(){
-      document.querySelector("image-cropper").img = document.getElementById("original");
+      let cropper = document.querySelector("image-cropper");
+      cropper.img = document.getElementById("original");
       document.getElementById("cropper").style.display = "";
     }
   </script>
