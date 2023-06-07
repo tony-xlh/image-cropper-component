@@ -11,12 +11,23 @@
       img {
         max-height: 350px;
       }
+
+      #cropper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
     </style>
   </head>
   <body>
     <div>
       Load local image:
       <input type="file" id="file" onchange="loadImageFromFile();" accept=".jpg,.jpeg,.png,.bmp" />
+      <div>
+        <button onclick="openCropper()">Open Cropper</button>
+      </div>
     </div>
     <div>
       <div>
@@ -28,8 +39,9 @@
         <img id="cropped"/>
       </div>
     </div>
-    
-    <image-cropper></image-cropper>
+    <div id="cropper" style="display:none;">
+      <image-cropper></image-cropper>
+    </div>
   </body>
   <script>
     function loadImageFromFile() { 
@@ -46,6 +58,11 @@
         console.warn('oops, something went wrong.');
       };
       fileReader.readAsDataURL(file);
+    }
+
+    function openCropper(){
+      document.querySelector("image-cropper").img = document.getElementById("original");
+      document.getElementById("cropper").style.display = "";
     }
   </script>
 </html>

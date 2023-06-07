@@ -7,6 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface ImageCropper {
+        "img"?: HTMLImageElement;
     }
 }
 declare global {
@@ -22,6 +23,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ImageCropper {
+        "img"?: HTMLImageElement;
     }
     interface IntrinsicElements {
         "image-cropper": ImageCropper;
