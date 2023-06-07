@@ -7,8 +7,45 @@
 
     <script type="module" src="/build/image-cropper-component.esm.js"></script>
     <script nomodule src="/build/image-cropper-component.js"></script>
+    <style>
+      img {
+        max-height: 350px;
+      }
+    </style>
   </head>
   <body>
-    <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>
+    <div>
+      Load local image:
+      <input type="file" id="file" onchange="loadImageFromFile();" accept=".jpg,.jpeg,.png,.bmp" />
+    </div>
+    <div>
+      <div>
+        <div>Original:</div>
+        <img id="original"/>
+      </div>
+      <div>
+        <div>Cropped:</div>
+        <img id="cropped"/>
+      </div>
+    </div>
+    
+    <image-cropper></image-cropper>
   </body>
+  <script>
+    function loadImageFromFile() { 
+      let files = document.getElementById('file').files;
+      if (files.length == 0) {
+        return;
+      }
+      let file = files[0];
+      fileReader = new FileReader();
+      fileReader.onload = function(e){
+        document.getElementById("original").src = e.target.result;
+      };
+      fileReader.onerror = function () {
+        console.warn('oops, something went wrong.');
+      };
+      fileReader.readAsDataURL(file);
+    }
+  </script>
 </html>
