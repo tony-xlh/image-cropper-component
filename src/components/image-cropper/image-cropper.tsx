@@ -106,7 +106,6 @@ export class ImageCropper {
             fill="transparent"
             onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e,index)}
             onMouseUp={(e:MouseEvent)=>this.onHandlerMouseUp(e)}
-            onMouseMove={(e:MouseEvent)=>this.onHandlerMouseMove(e)}
           />
         ))}
       </Fragment>
@@ -177,26 +176,6 @@ export class ImageCropper {
   }
 
   onSVGMouseMove(e:MouseEvent){
-    console.log(e);
-  }
-
-  onPolygonMouseDown(e:MouseEvent){
-    e.stopPropagation();
-    this.originalPoints = JSON.parse(JSON.stringify(this.points));
-    this.polygonMouseDown = true;
-    let coord = this.getMousePosition(e,this.svgElement);
-    this.polygonMouseDownPoint.x = coord.x;
-    this.polygonMouseDownPoint.y = coord.y;
-  }
-
-  onPolygonMouseUp(e:MouseEvent){
-    e.stopPropagation();
-    this.selectedHandlerIndex = -1;
-    this.polygonMouseDown = false;
-  }
-
-  onPolygonMouseMove(e:MouseEvent){
-    e.stopPropagation();
     if (this.polygonMouseDown) {
       let coord = this.getMousePosition(e,this.svgElement);
       let offsetX = coord.x - this.polygonMouseDownPoint.x;
@@ -212,24 +191,6 @@ export class ImageCropper {
       }
       this.points = newPoints;
     }
-  }
-
-  onHandlerMouseDown(e:MouseEvent,index:number){
-    e.stopPropagation();
-    let coord = this.getMousePosition(e,this.svgElement);
-    this.originalPoints = JSON.parse(JSON.stringify(this.points));
-    this.handlerMouseDownPoint.x = coord.x;
-    this.handlerMouseDownPoint.y = coord.y;
-    this.selectedHandlerIndex = index;
-  }
-
-  onHandlerMouseUp(e:MouseEvent){
-    e.stopPropagation();
-    this.selectedHandlerIndex = -1;
-  }
-
-  onHandlerMouseMove(e:MouseEvent){
-    e.stopPropagation();
     if (this.selectedHandlerIndex >= 0) {
       let coord = this.getMousePosition(e,this.svgElement);
       let offsetX = coord.x - this.handlerMouseDownPoint.x;
@@ -258,6 +219,36 @@ export class ImageCropper {
         this.points = newPoints;
       }
     }
+  }
+
+  onPolygonMouseDown(e:MouseEvent){
+    e.stopPropagation();
+    this.originalPoints = JSON.parse(JSON.stringify(this.points));
+    this.polygonMouseDown = true;
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.polygonMouseDownPoint.x = coord.x;
+    this.polygonMouseDownPoint.y = coord.y;
+  }
+
+  onPolygonMouseUp(e:MouseEvent){
+    e.stopPropagation();
+    this.selectedHandlerIndex = -1;
+    this.polygonMouseDown = false;
+  }
+
+
+  onHandlerMouseDown(e:MouseEvent,index:number){
+    e.stopPropagation();
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.originalPoints = JSON.parse(JSON.stringify(this.points));
+    this.handlerMouseDownPoint.x = coord.x;
+    this.handlerMouseDownPoint.y = coord.y;
+    this.selectedHandlerIndex = index;
+  }
+
+  onHandlerMouseUp(e:MouseEvent){
+    e.stopPropagation();
+    this.selectedHandlerIndex = -1;
   }
 
   getPointIndexFromHandlerIndex(index:number){
@@ -314,7 +305,6 @@ export class ImageCropper {
             fill="transparent"
             onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
             onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}
-            onMouseMove={(e:MouseEvent)=>this.onPolygonMouseMove(e)}
           >
           </polygon>
           {this.renderHandlers()}
