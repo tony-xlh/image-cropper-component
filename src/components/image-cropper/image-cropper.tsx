@@ -172,7 +172,8 @@ export class ImageCropper {
   }
 
   onSVGMouseUp(e:MouseEvent){
-    console.log(e);
+    this.selectedHandlerIndex = -1;
+    this.polygonMouseDown = false;
   }
 
   onSVGMouseMove(e:MouseEvent){
@@ -190,6 +191,7 @@ export class ImageCropper {
 
   onPolygonMouseUp(e:MouseEvent){
     e.stopPropagation();
+    this.selectedHandlerIndex = -1;
     this.polygonMouseDown = false;
   }
 
