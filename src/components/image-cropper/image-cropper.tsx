@@ -91,8 +91,8 @@ export class ImageCropper {
       <Fragment>
         {this.handlers.map(index => (
           <rect 
-            x={this.getHandlerX(index)} 
-            y={this.getHandlerY(index)} 
+            x={this.getHandlerPos(index,"x")} 
+            y={this.getHandlerPos(index,"y")} 
             width={this.getHandlerSize()}
             height={this.getHandlerSize()} 
             stroke="green" 
@@ -119,8 +119,8 @@ export class ImageCropper {
             fill="white" />
           {this.handlers.map(index => (
             <rect 
-              x={this.getHandlerX(index)} 
-              y={this.getHandlerY(index)} 
+              x={this.getHandlerPos(index,"x")} 
+              y={this.getHandlerPos(index,"y")} 
               width={this.getHandlerSize()}
               height={this.getHandlerSize()} fill="black" 
             />
@@ -130,52 +130,28 @@ export class ImageCropper {
     )
   }
 
-  getHandlerX(index:number) {
-    let x = 0;
+  getHandlerPos(index:number,key:string) {
+    let pos = 0;
     let size = this.getHandlerSize();
     if (index === 0){
-      x = this.points[0].x;
+      pos = this.points[0][key];
     }else if (index === 1) {
-      x = this.points[0].x + (this.points[1].x - this.points[0].x)/2;
+      pos = this.points[0][key] + (this.points[1][key] - this.points[0][key])/2;
     }else if (index === 2) {
-      x = this.points[1].x;
+      pos = this.points[1][key];
     }else if (index === 3) {
-      x = this.points[1].x + (this.points[2].x - this.points[1].x)/2;
+      pos = this.points[1][key] + (this.points[2][key] - this.points[1][key])/2;
     }else if (index === 4) {
-      x = this.points[2].x;
+      pos = this.points[2][key];
     }else if (index === 5) {
-      x = this.points[3].x + (this.points[2].x - this.points[3].x)/2;
+      pos = this.points[3][key] + (this.points[2][key] - this.points[3][key])/2;
     }else if (index === 6) {
-      x = this.points[3].x;
+      pos = this.points[3][key];
     }else if (index === 7) {
-      x = this.points[0].x + (this.points[3].x - this.points[0].x)/2;
+      pos = this.points[0][key] + (this.points[3][key] - this.points[0][key])/2;
     }
-    x = x - size/2;
-    return x;
-  }
-
-  getHandlerY(index:number) {
-    let y = 0;
-    let size = this.getHandlerSize();
-    if (index === 0){
-      y = this.points[0].y;
-    }else if (index === 1) {
-      y = this.points[0].y + (this.points[1].y - this.points[0].y)/2;
-    }else if (index === 2) {
-      y = this.points[1].y;
-    }else if (index === 3) {
-      y = this.points[1].y + (this.points[2].y - this.points[1].y)/2;
-    }else if (index === 4) {
-      y = this.points[2].y;
-    }else if (index === 5) {
-      y = this.points[3].y + (this.points[2].y - this.points[3].y)/2;
-    }else if (index === 6) {
-      y = this.points[3].y;
-    }else if (index === 7) {
-      y = this.points[0].y + (this.points[3].y - this.points[0].y)/2;
-    }
-    y = y - size/2;
-    return y;
+    pos = pos - size/2;
+    return pos;
   }
 
   getHandlerSize() {
