@@ -98,6 +98,9 @@ export class ImageCropper {
             stroke="green" 
             stroke-width="2"
             fill="transparent"
+            onMouseDown={(e:MouseEvent)=>this.handlerMouseDown(e)}
+            onMouseUp={(e:MouseEvent)=>this.handlerMouseUp(e)}
+            onMouseMove={(e:MouseEvent)=>this.handlerMouseMove(e)}
           />
         ))}
       </Fragment>
@@ -181,6 +184,21 @@ export class ImageCropper {
   }
 
   polygonMouseMove(e:MouseEvent){
+    console.log(e);
+    e.stopPropagation();
+  }
+
+  handlerMouseDown(e:MouseEvent){
+    console.log(e);
+    e.stopPropagation();
+  }
+
+  handlerMouseUp(e:MouseEvent){
+    console.log(e);
+    e.stopPropagation();
+  }
+
+  handlerMouseMove(e:MouseEvent){
     console.log(e);
     e.stopPropagation();
   }
