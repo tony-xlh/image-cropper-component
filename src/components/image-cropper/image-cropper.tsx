@@ -1,5 +1,21 @@
 import { Component, Event, EventEmitter, Host, Prop, State, Watch, h } from '@stencil/core';
 
+export interface Quad{
+  points:[Point,Point,Point,Point];
+}
+
+export interface Point{
+  x:number;
+  y:number;
+}
+
+export interface Rect{
+  x:number;
+  y:number;
+  width:number;
+  height:number;
+}
+
 @Component({
   tag: 'image-cropper',
   styleUrl: 'image-cropper.css',
@@ -7,14 +23,35 @@ import { Component, Event, EventEmitter, Host, Prop, State, Watch, h } from '@st
 })
 export class ImageCropper {
   @Prop() img?: HTMLImageElement;
+  @Prop() rect?: Rect;
+  @Prop() quad?: Quad;
   @State() viewBox:string = "0 0 1280 720";
+  @State() points:[Point,Point,Point,Point] = undefined;
   @Event() confirmed?: EventEmitter<void>;
   @Event() canceled?: EventEmitter<void>;
 
   @Watch('img')
-  watchPropHandler(newValue: HTMLImageElement) {
+  watchImgPropHandler(newValue: HTMLImageElement) {
     if (newValue) {
       this.viewBox = "0 0 "+newValue.naturalWidth+" "+newValue.naturalHeight;
+    }
+  }
+
+  @Watch('rect')
+  watchRectPropHandler(newValue: Rect) {
+    if (newValue) {
+      const point1:Point = {x:newValue.x,y:newValue.y};
+      const point2:Point = {x:newValue.x+newValue.width,y:newValue.y};
+      const point3:Point = {x:newValue.x+newValue.width,y:newValue.y+newValue.height};
+      const point4:Point = {x:newValue.x,y:newValue.y+newValue.height};
+      this.points = [point1,point2,point3,point4];
+    }
+  }
+
+  @Watch('quad')
+  watchQuadPropHandler(newValue: Quad) {
+    if (newValue) {
+      this.points = newValue.points;
     }
   }
 
@@ -34,6 +71,17 @@ export class ImageCropper {
     }
   }
 
+  getPointsData(){
+    if (this.points) {
+      let pointsData = this.points[0].x + "," + this.points[0].y + " ";
+      pointsData = pointsData + this.points[1].x + "," + this.points[1].y +" ";
+      pointsData = pointsData + this.points[2].x + "," + this.points[2].y +" ";
+      pointsData = pointsData + this.points[3].x + "," + this.points[3].y;
+      return pointsData;
+    }
+    return "";
+  }
+
   render() {
     return (
       <Host>
@@ -43,6 +91,14 @@ export class ImageCropper {
           viewBox={this.viewBox}
         >
           <image href={this.img ? this.img.src : ""}></image>
+          <polygon
+            points={this.getPointsData()}
+            stroke="green"
+            stroke-width="1"
+            fill="lime"
+            opacity="0.3"
+          >
+      </polygon>
         </svg>
         <div class="footer">
           <section class="items">

@@ -80,6 +80,7 @@
     function openCropper(){
       let cropper = document.querySelector("image-cropper");
       cropper.img = document.getElementById("original");
+      cropper.rect = {x:50,y:50,width:50,height:50};
       document.getElementById("cropper").style.display = "";
     }
   </script>

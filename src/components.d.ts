@@ -5,9 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { Quad, Rect } from "./components/image-cropper/image-cropper";
+export { Quad, Rect } from "./components/image-cropper/image-cropper";
 export namespace Components {
     interface ImageCropper {
         "img"?: HTMLImageElement;
+        "quad"?: Quad;
+        "rect"?: Rect;
     }
 }
 export interface ImageCropperCustomEvent<T> extends CustomEvent<T> {
@@ -30,6 +34,8 @@ declare namespace LocalJSX {
         "img"?: HTMLImageElement;
         "onCanceled"?: (event: ImageCropperCustomEvent<void>) => void;
         "onConfirmed"?: (event: ImageCropperCustomEvent<void>) => void;
+        "quad"?: Quad;
+        "rect"?: Rect;
     }
     interface IntrinsicElements {
         "image-cropper": ImageCropper;
