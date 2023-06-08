@@ -57,3 +57,7 @@
 .cropper-svg rect {
   cursor:grab;
 }
+
+.hidden-canvas {
+  display: none;
+}

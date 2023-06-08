@@ -33,7 +33,9 @@
       <div>Original:</div>
       <div class="orginalImageContainer"></div>
       <div>Cropped:</div>
-      <div class="croppedImageContainer"></div>
+      <div class="croppedImageContainer">
+        <img id="cropped" />
+      </div>
     </div>
     <div id="cropper" style="display:none;">
       <image-cropper></image-cropper>
@@ -77,6 +79,9 @@
         let rect = await cropper.getRect();
         console.log(quad);
         console.log(rect);
+        let croppedImage = await cropper.getCroppedImage();
+        document.getElementById("cropped").src = croppedImage;
+
       }
       cropper.addEventListener("canceled",canceled);
       cropper.addEventListener("confirmed",confirmed);

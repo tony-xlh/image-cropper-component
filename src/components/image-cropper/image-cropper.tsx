@@ -27,6 +27,7 @@ export class ImageCropper {
   polygonMouseDownPoint:Point = {x:0,y:0};
   handlerMouseDownPoint:Point = {x:0,y:0};
   svgElement:SVGElement;
+  canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
@@ -337,12 +338,31 @@ export class ImageCropper {
         maxY = Math.max(point.y,maxY);  
       }
     }
+    minX = Math.floor(minX);
+    maxX = Math.floor(maxX);
+    minY = Math.floor(minY);
+    maxY = Math.floor(maxY);
     return {x:minX,y:minY,width:maxX - minX,height:maxY - minY};
+  }
+
+  @Method()
+  async getCroppedImage():Promise<string>
+  {
+    let ctx = this.canvasElement.getContext("2d");
+    let rect = await this.getRect();
+    this.canvasElement.width = rect.width;
+    this.canvasElement.height = rect.height;
+    ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+    return this.canvasElement.toDataURL();
   }
 
   render() {
     return (
       <Host>
+        <canvas 
+          ref={(el) => this.canvasElement = el as HTMLCanvasElement}
+          class="hidden-canvas"
+        ></canvas>
         <svg 
           version="1.1" 
           ref={(el) => this.svgElement = el as SVGElement}

@@ -9,6 +9,7 @@ import { Point, Quad, Rect } from "./components/image-cropper/image-cropper";
 export { Point, Quad, Rect } from "./components/image-cropper/image-cropper";
 export namespace Components {
     interface ImageCropper {
+        "getCroppedImage": () => Promise<string>;
         "getPoints": () => Promise<[Point, Point, Point, Point]>;
         "getQuad": () => Promise<Quad>;
         "getRect": () => Promise<Rect>;
