@@ -158,6 +158,18 @@ export class ImageCropper {
     return 10;
   }
 
+  svgMouseDown(e:MouseEvent){
+    console.log(e);
+  }
+
+  svgMouseUp(e:MouseEvent){
+    console.log(e);
+  }
+
+  svgMouseMove(e:MouseEvent){
+    console.log(e);
+  }
+
   render() {
     return (
       <Host>
@@ -165,6 +177,9 @@ export class ImageCropper {
           version="1.1" 
           xmlns="http://www.w3.org/2000/svg"
           viewBox={this.viewBox}
+          onMouseDown={(e:MouseEvent)=>this.svgMouseDown(e)}
+          onMouseUp={(e:MouseEvent)=>this.svgMouseUp(e)}
+          onMouseMove={(e:MouseEvent)=>this.svgMouseMove(e)}
         >
           {this.renderHandlersMaskDefs()}
           <image href={this.img ? this.img.src : ""}></image>
