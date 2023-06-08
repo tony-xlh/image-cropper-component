@@ -102,7 +102,7 @@ export class ImageCropper {
             width={this.getHandlerSize()}
             height={this.getHandlerSize()} 
             stroke="green" 
-            stroke-width={index === this.selectedHandlerIndex ? "4" : "2"}
+            stroke-width={index === this.selectedHandlerIndex ? 4 * this.getRatio() : 2 * this.getRatio()}
             fill="transparent"
             onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e,index)}
             onMouseUp={(e:MouseEvent)=>this.onHandlerMouseUp(e)}
@@ -163,7 +163,8 @@ export class ImageCropper {
   }
 
   getHandlerSize() {
-    return 10;
+    let ratio = this.getRatio()
+    return Math.ceil(10*ratio);
   }
 
   onSVGMouseDown(e:MouseEvent){
@@ -282,6 +283,14 @@ export class ImageCropper {
     }
   }
 
+  getRatio(){
+    if (this.img) {
+      return this.img.naturalWidth/750;
+    }else{
+      return 1;
+    }
+  }
+
   @Method()
   async getPoints():Promise<[Point,Point,Point,Point]>
   {
@@ -336,7 +345,7 @@ export class ImageCropper {
             mask="url(#myMask)"
             points={this.getPointsData()}
             stroke="green"
-            stroke-width="2"
+            stroke-width={2 * this.getRatio()}
             fill="transparent"
             onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
             onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}
