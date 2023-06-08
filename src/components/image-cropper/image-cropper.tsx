@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Host, Prop, State, Watch, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Fragment, Host, Prop, State, Watch, h } from '@stencil/core';
 
 export interface Quad{
   points:[Point,Point,Point,Point];
@@ -22,6 +22,7 @@ export interface Rect{
   shadow: true,
 })
 export class ImageCropper {
+  handlers:number[] = [0,1,2,3,4,5,6,7];
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
@@ -82,6 +83,105 @@ export class ImageCropper {
     return "";
   }
 
+  renderHandlers(){
+    if (!this.points) {
+      return (<div></div>)
+    }
+    return (
+      <Fragment>
+        {this.handlers.map(index => (
+          <rect 
+            x={this.getHandlerX(index)} 
+            y={this.getHandlerY(index)} 
+            width={this.getHandlerSize()}
+            height={this.getHandlerSize()} 
+            stroke="green" 
+            stroke-width="2"
+            fill="transparent"
+          />
+        ))}
+      </Fragment>
+    )
+  }
+
+  renderHandlersMaskDefs(){
+    if (!this.points) {
+      return (<div></div>)
+    }
+    return (
+      <defs>
+        <mask id="myMask">
+          <rect 
+            x="0" 
+            y="0" 
+            width={this.img ? this.img.naturalWidth : "0"}
+            height={this.img ? this.img.naturalHeight : "0"}
+            fill="white" />
+          {this.handlers.map(index => (
+            <rect 
+              x={this.getHandlerX(index)} 
+              y={this.getHandlerY(index)} 
+              width={this.getHandlerSize()}
+              height={this.getHandlerSize()} fill="black" 
+            />
+          ))}
+        </mask>
+      </defs>
+    )
+  }
+
+  getHandlerX(index:number) {
+    let x = 0;
+    let size = this.getHandlerSize();
+    if (index === 0){
+      x = this.points[0].x;
+    }else if (index === 1) {
+      x = this.points[0].x + (this.points[1].x - this.points[0].x)/2;
+    }else if (index === 2) {
+      x = this.points[1].x;
+    }else if (index === 3) {
+      x = this.points[1].x + (this.points[2].x - this.points[1].x)/2;
+    }else if (index === 4) {
+      x = this.points[2].x;
+    }else if (index === 5) {
+      x = this.points[3].x + (this.points[2].x - this.points[3].x)/2;
+    }else if (index === 6) {
+      x = this.points[3].x;
+    }else if (index === 7) {
+      x = this.points[0].x + (this.points[3].x - this.points[0].x)/2;
+    }
+    x = x - size/2;
+    return x;
+  }
+
+  getHandlerY(index:number) {
+    let y = 0;
+    let size = this.getHandlerSize();
+    if (index === 0){
+      y = this.points[0].y;
+    }else if (index === 1) {
+      y = this.points[0].y + (this.points[1].y - this.points[0].y)/2;
+    }else if (index === 2) {
+      y = this.points[1].y;
+    }else if (index === 3) {
+      y = this.points[1].y + (this.points[2].y - this.points[1].y)/2;
+    }else if (index === 4) {
+      y = this.points[2].y;
+    }else if (index === 5) {
+      y = this.points[3].y + (this.points[2].y - this.points[3].y)/2;
+    }else if (index === 6) {
+      y = this.points[3].y;
+    }else if (index === 7) {
+      y = this.points[0].y + (this.points[3].y - this.points[0].y)/2;
+    }
+    y = y - size/2;
+    return y;
+  }
+
+  getHandlerSize() {
+    return 10;
+  }
+
   render() {
     return (
       <Host>
@@ -90,15 +190,17 @@ export class ImageCropper {
           xmlns="http://www.w3.org/2000/svg"
           viewBox={this.viewBox}
         >
+          {this.renderHandlersMaskDefs()}
           <image href={this.img ? this.img.src : ""}></image>
           <polygon
+            mask="url(#myMask)"
             points={this.getPointsData()}
             stroke="green"
-            stroke-width="1"
-            fill="lime"
-            opacity="0.3"
+            stroke-width="2"
+            fill="transparent"
           >
-      </polygon>
+          </polygon>
+          {this.renderHandlers()}
         </svg>
         <div class="footer">
           <section class="items">
