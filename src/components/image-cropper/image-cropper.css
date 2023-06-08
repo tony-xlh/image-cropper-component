@@ -49,3 +49,11 @@
   pointer-events: all;
   cursor:pointer;
 }
+
+.cropper-svg polygon {
+  cursor:move;
+}
+
+.cropper-svg rect {
+  cursor:grab;
+}

@@ -208,6 +208,7 @@ export class ImageCropper {
       <Host>
         <svg 
           version="1.1" 
+          class="cropper-svg"
           xmlns="http://www.w3.org/2000/svg"
           viewBox={this.viewBox}
           onMouseDown={(e:MouseEvent)=>this.svgMouseDown(e)}
