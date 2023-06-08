@@ -202,7 +202,21 @@ export class ImageCropper {
         let selectedPoint = newPoints[pointIndex];
         selectedPoint.x = this.originalPoints[pointIndex].x + offsetX;
         selectedPoint.y = this.originalPoints[pointIndex].y + offsetY;
-        this.points = newPoints;
+        if (!this.quad) { //rect mode
+          if (pointIndex === 0) {
+            newPoints[1].y = selectedPoint.y;
+            newPoints[3].x = selectedPoint.x;
+          }else if (pointIndex === 1) {
+            newPoints[0].y = selectedPoint.y;
+            newPoints[2].x = selectedPoint.x;
+          }else if (pointIndex === 2) {
+            newPoints[1].x = selectedPoint.x;
+            newPoints[3].y = selectedPoint.y;
+          }else if (pointIndex === 3) {
+            newPoints[0].x = selectedPoint.x;
+            newPoints[2].y = selectedPoint.y;
+          }
+        }
       }else{ //mid-point handlers
         if (this.selectedHandlerIndex === 1) {
           newPoints[0].y = this.originalPoints[0].y + offsetY;
@@ -217,8 +231,8 @@ export class ImageCropper {
           newPoints[0].x = this.originalPoints[0].x + offsetX;
           newPoints[3].x = this.originalPoints[3].x + offsetX;
         }
-        this.points = newPoints;
       }
+      this.points = newPoints;
     }
   }
 
