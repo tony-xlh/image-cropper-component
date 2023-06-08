@@ -5,10 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { Quad, Rect } from "./components/image-cropper/image-cropper";
-export { Quad, Rect } from "./components/image-cropper/image-cropper";
+import { Point, Quad, Rect } from "./components/image-cropper/image-cropper";
+export { Point, Quad, Rect } from "./components/image-cropper/image-cropper";
 export namespace Components {
     interface ImageCropper {
+        "getPoints": () => Promise<[Point, Point, Point, Point]>;
+        "getQuad": () => Promise<Quad>;
+        "getRect": () => Promise<Rect>;
         "img"?: HTMLImageElement;
         "quad"?: Quad;
         "rect"?: Rect;

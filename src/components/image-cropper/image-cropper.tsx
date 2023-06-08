@@ -1,4 +1,4 @@
-import { Component, Event, EventEmitter, Fragment, Host, Prop, State, Watch, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Fragment, Host, Method, Prop, State, Watch, h } from '@stencil/core';
 
 export interface Quad{
   points:[Point,Point,Point,Point];
@@ -280,6 +280,41 @@ export class ImageCropper {
         y: (event.clientY - CTM.f) / CTM.d
       };
     }
+  }
+
+  @Method()
+  async getPoints():Promise<[Point,Point,Point,Point]>
+  {
+    return this.points;
+  }
+
+  @Method()
+  async getQuad():Promise<Quad>
+  {
+    return {points:this.points};
+  }
+
+  @Method()
+  async getRect():Promise<Rect>
+  {
+    let minX:number;
+    let minY:number;
+    let maxX:number;
+    let maxY:number;
+    for (const point of this.points) {
+      if (!minX) {
+        minX = point.x;
+        maxX = point.x;
+        minY = point.y;
+        maxY = point.y;
+      }else{
+        minX = Math.min(point.x,minX);
+        minY = Math.min(point.y,minY);
+        maxX = Math.max(point.x,maxX);
+        maxY = Math.max(point.y,maxY);  
+      }
+    }
+    return {x:minX,y:minY,width:maxX - minX,height:maxY - minY};
   }
 
   render() {

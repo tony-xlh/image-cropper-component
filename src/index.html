@@ -71,8 +71,12 @@
       const canceled = () => {
         document.getElementById("cropper").style.display = "none";
       }
-      const confirmed = () => {
+      const confirmed = async () => {
         document.getElementById("cropper").style.display = "none";
+        let quad = await cropper.getQuad();
+        let rect = await cropper.getRect();
+        console.log(quad);
+        console.log(rect);
       }
       cropper.addEventListener("canceled",canceled);
       cropper.addEventListener("confirmed",confirmed);
