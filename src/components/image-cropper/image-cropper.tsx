@@ -170,6 +170,21 @@ export class ImageCropper {
     console.log(e);
   }
 
+  polygonMouseDown(e:MouseEvent){
+    console.log(e);
+    e.stopPropagation();
+  }
+
+  polygonMouseUp(e:MouseEvent){
+    console.log(e);
+    e.stopPropagation();
+  }
+
+  polygonMouseMove(e:MouseEvent){
+    console.log(e);
+    e.stopPropagation();
+  }
+
   render() {
     return (
       <Host>
@@ -189,6 +204,9 @@ export class ImageCropper {
             stroke="green"
             stroke-width="2"
             fill="transparent"
+            onMouseDown={(e:MouseEvent)=>this.polygonMouseDown(e)}
+            onMouseUp={(e:MouseEvent)=>this.polygonMouseUp(e)}
+            onMouseMove={(e:MouseEvent)=>this.polygonMouseMove(e)}
           >
           </polygon>
           {this.renderHandlers()}
