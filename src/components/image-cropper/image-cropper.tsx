@@ -25,12 +25,14 @@ export class ImageCropper {
   handlers:number[] = [0,1,2,3,4,5,6,7];
   polygonMouseDown:boolean = false;
   polygonMouseDownPoint:Point = {x:0,y:0};
+  handlerMouseDownPoint:Point = {x:0,y:0};
   svgElement:SVGElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
   @State() viewBox:string = "0 0 1280 720";
+  @State() selectedHandlerIndex:number = -1;
   @State() points:[Point,Point,Point,Point] = undefined;
   @Event() confirmed?: EventEmitter<void>;
   @Event() canceled?: EventEmitter<void>;
@@ -100,9 +102,9 @@ export class ImageCropper {
             width={this.getHandlerSize()}
             height={this.getHandlerSize()} 
             stroke="green" 
-            stroke-width="2"
+            stroke-width={index === this.selectedHandlerIndex ? "4" : "2"}
             fill="transparent"
-            onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e)}
+            onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e,index)}
             onMouseUp={(e:MouseEvent)=>this.onHandlerMouseUp(e)}
             onMouseMove={(e:MouseEvent)=>this.onHandlerMouseMove(e)}
           />
@@ -210,19 +212,63 @@ export class ImageCropper {
     }
   }
 
-  onHandlerMouseDown(e:MouseEvent){
-    console.log(e);
+  onHandlerMouseDown(e:MouseEvent,index:number){
     e.stopPropagation();
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.originalPoints = JSON.parse(JSON.stringify(this.points));
+    this.handlerMouseDownPoint.x = coord.x;
+    this.handlerMouseDownPoint.y = coord.y;
+    this.selectedHandlerIndex = index;
   }
 
   onHandlerMouseUp(e:MouseEvent){
-    console.log(e);
     e.stopPropagation();
+    this.selectedHandlerIndex = -1;
   }
 
   onHandlerMouseMove(e:MouseEvent){
-    console.log(e);
     e.stopPropagation();
+    if (this.selectedHandlerIndex >= 0) {
+      let coord = this.getMousePosition(e,this.svgElement);
+      let offsetX = coord.x - this.handlerMouseDownPoint.x;
+      let offsetY = coord.y - this.handlerMouseDownPoint.y;
+      let newPoints = JSON.parse(JSON.stringify(this.originalPoints));
+      let pointIndex = this.getPointIndexFromHandlerIndex(this.selectedHandlerIndex);
+      if (pointIndex != -1) {
+        let selectedPoint = newPoints[pointIndex];
+        selectedPoint.x = this.originalPoints[pointIndex].x + offsetX;
+        selectedPoint.y = this.originalPoints[pointIndex].y + offsetY;
+        this.points = newPoints;
+      }else{ //mid-point handlers
+        if (this.selectedHandlerIndex === 1) {
+          newPoints[0].y = this.originalPoints[0].y + offsetY;
+          newPoints[1].y = this.originalPoints[1].y + offsetY;
+        }else if (this.selectedHandlerIndex === 3) {
+          newPoints[1].x = this.originalPoints[1].x + offsetX;
+          newPoints[2].x = this.originalPoints[2].x + offsetX;
+        }else if (this.selectedHandlerIndex === 5) {
+          newPoints[2].y = this.originalPoints[2].y + offsetY;
+          newPoints[3].y = this.originalPoints[3].y + offsetY;
+        }else if (this.selectedHandlerIndex === 7) {
+          newPoints[0].x = this.originalPoints[0].x + offsetX;
+          newPoints[3].x = this.originalPoints[3].x + offsetX;
+        }
+        this.points = newPoints;
+      }
+    }
+  }
+
+  getPointIndexFromHandlerIndex(index:number){
+    if (index === 0) {
+      return 0;
+    }else if (index === 2) {
+      return 1;
+    }else if (index === 4) {
+      return 2;
+    }else if (index === 6) {
+      return 3;
+    }
+    return -1;
   }
 
   //Convert the screen coordinates to the SVG's coordinates from https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
