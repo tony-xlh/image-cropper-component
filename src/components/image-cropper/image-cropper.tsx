@@ -23,6 +23,10 @@ export interface Rect{
 })
 export class ImageCropper {
   handlers:number[] = [0,1,2,3,4,5,6,7];
+  polygonMouseDown:boolean = false;
+  polygonMouseDownPoint:Point = {x:0,y:0};
+  svgElement:SVGElement;
+  originalPoints:[Point,Point,Point,Point] = undefined;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
@@ -98,9 +102,9 @@ export class ImageCropper {
             stroke="green" 
             stroke-width="2"
             fill="transparent"
-            onMouseDown={(e:MouseEvent)=>this.handlerMouseDown(e)}
-            onMouseUp={(e:MouseEvent)=>this.handlerMouseUp(e)}
-            onMouseMove={(e:MouseEvent)=>this.handlerMouseMove(e)}
+            onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e)}
+            onMouseUp={(e:MouseEvent)=>this.onHandlerMouseUp(e)}
+            onMouseMove={(e:MouseEvent)=>this.onHandlerMouseMove(e)}
           />
         ))}
       </Fragment>
@@ -161,46 +165,82 @@ export class ImageCropper {
     return 10;
   }
 
-  svgMouseDown(e:MouseEvent){
+  onSVGMouseDown(e:MouseEvent){
     console.log(e);
   }
 
-  svgMouseUp(e:MouseEvent){
+  onSVGMouseUp(e:MouseEvent){
     console.log(e);
   }
 
-  svgMouseMove(e:MouseEvent){
+  onSVGMouseMove(e:MouseEvent){
     console.log(e);
   }
 
-  polygonMouseDown(e:MouseEvent){
+  onPolygonMouseDown(e:MouseEvent){
+    e.stopPropagation();
+    this.originalPoints = JSON.parse(JSON.stringify(this.points));
+    this.polygonMouseDown = true;
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.polygonMouseDownPoint.x = coord.x;
+    this.polygonMouseDownPoint.y = coord.y;
+  }
+
+  onPolygonMouseUp(e:MouseEvent){
+    e.stopPropagation();
+    this.polygonMouseDown = false;
+  }
+
+  onPolygonMouseMove(e:MouseEvent){
+    e.stopPropagation();
+    if (this.polygonMouseDown) {
+      let coord = this.getMousePosition(e,this.svgElement);
+      let offsetX = coord.x - this.polygonMouseDownPoint.x;
+      let offsetY = coord.y - this.polygonMouseDownPoint.y;
+      let newPoints = JSON.parse(JSON.stringify(this.originalPoints));
+      for (const point of newPoints) {
+        point.x = point.x + offsetX;
+        point.y = point.y + offsetY;
+        if (point.x < 0 || point.y < 0 || point.x > this.img.naturalWidth || point.y > this.img.naturalHeight){
+          console.log("reach bounds");
+          return;
+        }
+      }
+      this.points = newPoints;
+    }
+  }
+
+  onHandlerMouseDown(e:MouseEvent){
     console.log(e);
     e.stopPropagation();
   }
 
-  polygonMouseUp(e:MouseEvent){
+  onHandlerMouseUp(e:MouseEvent){
     console.log(e);
     e.stopPropagation();
   }
 
-  polygonMouseMove(e:MouseEvent){
+  onHandlerMouseMove(e:MouseEvent){
     console.log(e);
     e.stopPropagation();
   }
 
-  handlerMouseDown(e:MouseEvent){
-    console.log(e);
-    e.stopPropagation();
-  }
-
-  handlerMouseUp(e:MouseEvent){
-    console.log(e);
-    e.stopPropagation();
-  }
-
-  handlerMouseMove(e:MouseEvent){
-    console.log(e);
-    e.stopPropagation();
+  //Convert the screen coordinates to the SVG's coordinates from https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
+  getMousePosition(event:any,svg:any) {
+    let CTM = svg.getScreenCTM();
+    if (event.targetTouches) { //if it is a touch event
+      let x = event.targetTouches[0].clientX;
+      let y = event.targetTouches[0].clientY;
+      return {
+        x: (x - CTM.e) / CTM.a,
+        y: (y - CTM.f) / CTM.d
+      };
+    }else{
+      return {
+        x: (event.clientX - CTM.e) / CTM.a,
+        y: (event.clientY - CTM.f) / CTM.d
+      };
+    }
   }
 
   render() {
@@ -208,12 +248,13 @@ export class ImageCropper {
       <Host>
         <svg 
           version="1.1" 
+          ref={(el) => this.svgElement = el as SVGElement}
           class="cropper-svg"
           xmlns="http://www.w3.org/2000/svg"
           viewBox={this.viewBox}
-          onMouseDown={(e:MouseEvent)=>this.svgMouseDown(e)}
-          onMouseUp={(e:MouseEvent)=>this.svgMouseUp(e)}
-          onMouseMove={(e:MouseEvent)=>this.svgMouseMove(e)}
+          onMouseDown={(e:MouseEvent)=>this.onSVGMouseDown(e)}
+          onMouseUp={(e:MouseEvent)=>this.onSVGMouseUp(e)}
+          onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
         >
           {this.renderHandlersMaskDefs()}
           <image href={this.img ? this.img.src : ""}></image>
@@ -223,9 +264,9 @@ export class ImageCropper {
             stroke="green"
             stroke-width="2"
             fill="transparent"
-            onMouseDown={(e:MouseEvent)=>this.polygonMouseDown(e)}
-            onMouseUp={(e:MouseEvent)=>this.polygonMouseUp(e)}
-            onMouseMove={(e:MouseEvent)=>this.polygonMouseMove(e)}
+            onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
+            onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}
+            onMouseMove={(e:MouseEvent)=>this.onPolygonMouseMove(e)}
           >
           </polygon>
           {this.renderHandlers()}
