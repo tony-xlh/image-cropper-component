@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
     <title>Stencil Component Starter</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/dynamsoft-document-normalizer@1.0.12/dist/ddn.js"></script>
     <script type="module" src="/build/image-cropper-component.esm.js"></script>
     <script nomodule src="/build/image-cropper-component.js"></script>
     <style>
@@ -77,20 +77,24 @@
         document.getElementById("cropper").style.display = "none";
         let quad = await cropper.getQuad();
         let rect = await cropper.getRect();
-        console.log(quad);
-        console.log(rect);
-        let croppedImage = await cropper.getCroppedImage();
+        let croppedImage = await cropper.getCroppedImage(true,"color");
         document.getElementById("cropped").src = croppedImage;
 
       }
+      cropper.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==";
       cropper.addEventListener("canceled",canceled);
       cropper.addEventListener("confirmed",confirmed);
     }
 
-    function openCropper(){
+    async function openCropper(){
       let cropper = document.querySelector("image-cropper");
       cropper.img = document.getElementById("original");
-      cropper.rect = {x:50,y:50,width:200,height:200};
+      let quads = await cropper.detect(cropper.img);
+      if (quads.length > 0) {
+        cropper.quad = quads[0].location;
+      }else{
+        cropper.rect = {x:50,y:50,width:200,height:200};
+      }
       document.getElementById("cropper").style.display = "";
     }
   </script>

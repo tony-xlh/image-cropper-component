@@ -1,4 +1,5 @@
 import { Component, Event, EventEmitter, Fragment, Host, Method, Prop, State, Watch, h } from '@stencil/core';
+import { DetectedQuadResult, DocumentNormalizer } from 'dynamsoft-document-normalizer';
 
 export interface Quad{
   points:[Point,Point,Point,Point];
@@ -29,9 +30,11 @@ export class ImageCropper {
   svgElement:SVGElement;
   canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
+  ddn:DocumentNormalizer|undefined;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
+  @Prop() license?: string;
   @State() viewBox:string = "0 0 1280 720";
   @State() selectedHandlerIndex:number = -1;
   @State() points:[Point,Point,Point,Point] = undefined;
@@ -346,14 +349,49 @@ export class ImageCropper {
   }
 
   @Method()
-  async getCroppedImage():Promise<string>
+  async getCroppedImage(perspectiveTransform?:boolean,colorMode?:"binary"|"gray"|"color"):Promise<string>
   {
-    let ctx = this.canvasElement.getContext("2d");
-    let rect = await this.getRect();
-    this.canvasElement.width = rect.width;
-    this.canvasElement.height = rect.height;
-    ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
-    return this.canvasElement.toDataURL();
+    if (perspectiveTransform && window["Dynamsoft"]["DDN"]) {
+      if (!this.ddn) {
+        await this.initDDN();
+      }
+      if (colorMode) {
+        let template;
+        if (colorMode === "binary") {
+          template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_BINARY\"}]}";
+        } else if (colorMode === "gray") {
+          template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_GRAYSCALE\"}]}";
+        } else {
+          template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_COLOUR\"}]}";
+        }
+        await this.ddn.setRuntimeSettings(template);
+      }
+      let quad = await this.getQuad();
+      let normalizedResult = await this.ddn.normalize(this.img,{quad:quad});
+      return normalizedResult.image.toCanvas().toDataURL();
+    }else{
+      let ctx = this.canvasElement.getContext("2d");
+      let rect = await this.getRect();
+      this.canvasElement.width = rect.width;
+      this.canvasElement.height = rect.height;
+      ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+      return this.canvasElement.toDataURL();
+    }
+  }
+
+  @Method()
+  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResult[]>
+  {
+    if (!this.ddn) {
+      await this.initDDN();
+    }
+    let results:DetectedQuadResult[] = await this.ddn.detectQuad(source);
+    return results;
+  }
+
+  async initDDN(){
+    window["Dynamsoft"]["DDN"]["DocumentNormalizer"].license = this.license;
+    this.ddn = await window["Dynamsoft"]["DDN"]["DocumentNormalizer"].createInstance();
   }
 
   render() {
