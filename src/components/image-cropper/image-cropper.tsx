@@ -37,6 +37,7 @@ export class ImageCropper {
   @Prop() quad?: Quad;
   @Prop() license?: string;
   @Prop() hidefooter?: string;
+  @Prop() handlersize?: string;
   @State() viewBox:string = "0 0 1280 720";
   @State() selectedHandlerIndex:number = -1;
   @State() points:[Point,Point,Point,Point] = undefined;
@@ -185,8 +186,16 @@ export class ImageCropper {
   }
 
   getHandlerSize() {
-    let ratio = this.getRatio()
-    return Math.ceil(10*ratio);
+    let ratio = this.getRatio();
+    let size:number = 20;
+    if (this.handlersize) {
+      try {
+        size = parseInt(this.handlersize)  
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    return Math.ceil(size*ratio);
   }
 
   onSVGTouchStart(e:TouchEvent) {

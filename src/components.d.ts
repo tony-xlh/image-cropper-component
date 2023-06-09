@@ -16,6 +16,7 @@ export namespace Components {
         "getPoints": () => Promise<[Point, Point, Point, Point]>;
         "getQuad": () => Promise<Quad>;
         "getRect": () => Promise<Rect>;
+        "handlersize"?: string;
         "hidefooter"?: string;
         "img"?: HTMLImageElement;
         "license"?: string;
@@ -40,6 +41,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ImageCropper {
+        "handlersize"?: string;
         "hidefooter"?: string;
         "img"?: HTMLImageElement;
         "license"?: string;
