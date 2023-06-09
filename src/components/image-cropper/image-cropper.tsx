@@ -382,11 +382,15 @@ export class ImageCropper {
   @Method()
   async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResult[]>
   {
-    if (!this.ddn) {
-      await this.initDDN();
+    if (window["Dynamsoft"]["DDN"]["DocumentNormalizer"]) {
+      if (!this.ddn) {
+        await this.initDDN();
+      }
+      let results:DetectedQuadResult[] = await this.ddn.detectQuad(source);
+      return results;
+    }else{
+      throw "Dynamsoft Document Normalizer not found";
     }
-    let results:DetectedQuadResult[] = await this.ddn.detectQuad(source);
-    return results;
   }
 
   async initDDN(){
