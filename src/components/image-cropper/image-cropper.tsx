@@ -176,7 +176,10 @@ export class ImageCropper {
   onSVGTouchStart(e:TouchEvent) {
     console.log(e);
     if (this.selectedHandlerIndex != -1) {
-      this.handlerMouseDownPoint = this.getMousePosition(e,this.svgElement); //We need this info so that whether we start dragging the rectangular in the center or in the corner will not affect the result.
+      let coord = this.getMousePosition(e,this.svgElement);
+      this.originalPoints = JSON.parse(JSON.stringify(this.points));  //We need this info so that whether we start dragging the rectangular in the center or in the corner will not affect the result.
+      this.handlerMouseDownPoint.x = coord.x;
+      this.handlerMouseDownPoint.y = coord.y;
     }
   }
 
@@ -222,11 +225,11 @@ export class ImageCropper {
       this.points = newPoints;
     }
     if (this.selectedHandlerIndex >= 0) {
+      let pointIndex = this.getPointIndexFromHandlerIndex(this.selectedHandlerIndex);
       let coord = this.getMousePosition(e,this.svgElement);
       let offsetX = coord.x - this.handlerMouseDownPoint.x;
       let offsetY = coord.y - this.handlerMouseDownPoint.y;
       let newPoints = JSON.parse(JSON.stringify(this.originalPoints));
-      let pointIndex = this.getPointIndexFromHandlerIndex(this.selectedHandlerIndex);
       if (pointIndex != -1) {
         let selectedPoint = newPoints[pointIndex];
         selectedPoint.x = this.originalPoints[pointIndex].x + offsetX;
