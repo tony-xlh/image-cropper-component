@@ -27,6 +27,7 @@
       <input type="file" id="file" onchange="loadImageFromFile();" accept=".jpg,.jpeg,.png,.bmp" />
       <div>
         <button onclick="openCropper()">Open Cropper</button>
+        <span id="status"></span>
       </div>
     </div>
     <div>
@@ -89,7 +90,9 @@
     async function openCropper(){
       let cropper = document.querySelector("image-cropper");
       cropper.img = document.getElementById("original");
+      document.getElementById("status").innerText = "Detecting...";
       let quads = await cropper.detect(cropper.img);
+      document.getElementById("status").innerText = "";
       if (quads.length > 0) {
         cropper.quad = quads[0].location;
       }else{
