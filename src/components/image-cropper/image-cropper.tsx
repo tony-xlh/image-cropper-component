@@ -475,7 +475,7 @@ export class ImageCropper {
   }
 
   getSVGWidth(){
-    if (this.img) {
+    if (this.img && this.svgElement) {
       let imgRatio = this.img.naturalWidth/this.img.naturalHeight;
       let width = this.svgElement.clientHeight * imgRatio;
       return width;
