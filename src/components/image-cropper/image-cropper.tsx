@@ -31,6 +31,7 @@ export class ImageCropper {
   canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
   ddn:DocumentNormalizer|undefined;
+  usingTouchEvent:boolean = false;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
@@ -110,6 +111,7 @@ export class ImageCropper {
             fill="transparent"
             onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e,index)}
             onMouseUp={(e:MouseEvent)=>this.onHandlerMouseUp(e)}
+            onTouchStart={(e:TouchEvent)=>this.onHandlerTouchStart(e,index)}
           />
         ))}
       </Fragment>
@@ -171,16 +173,39 @@ export class ImageCropper {
     return Math.ceil(10*ratio);
   }
 
+  onSVGTouchStart(e:TouchEvent) {
+    console.log(e);
+    if (this.selectedHandlerIndex != -1) {
+      this.handlerMouseDownPoint = this.getMousePosition(e,this.svgElement); //We need this info so that whether we start dragging the rectangular in the center or in the corner will not affect the result.
+    }
+  }
+
+  onSVGTouchEnd(e:TouchEvent) {
+    console.log(e);
+  }
+
+  onSVGTouchMove(e:TouchEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.handleMoveEvent(e);
+  }
+
   onSVGMouseDown(e:MouseEvent){
     console.log(e);
   }
 
   onSVGMouseUp(e:MouseEvent){
-    this.selectedHandlerIndex = -1;
-    this.polygonMouseDown = false;
+    if (!this.usingTouchEvent) {
+      this.selectedHandlerIndex = -1;
+      this.polygonMouseDown = false;
+    }
   }
 
   onSVGMouseMove(e:MouseEvent){
+    this.handleMoveEvent(e);
+  }
+
+  handleMoveEvent(e:MouseEvent|TouchEvent){
     if (this.polygonMouseDown) {
       let coord = this.getMousePosition(e,this.svgElement);
       let offsetX = coord.x - this.polygonMouseDownPoint.x;
@@ -251,10 +276,29 @@ export class ImageCropper {
 
   onPolygonMouseUp(e:MouseEvent){
     e.stopPropagation();
+    if (!this.usingTouchEvent) {
+      this.selectedHandlerIndex = -1;
+      this.polygonMouseDown = false;
+    }
+  }
+
+  onPolygonTouchStart(e:TouchEvent) {
+    this.usingTouchEvent = true;
+    e.stopPropagation();
+    this.selectedHandlerIndex = -1;
+    this.polygonMouseDown = false;
+    this.originalPoints = JSON.parse(JSON.stringify(this.points));
+    this.polygonMouseDown = true;
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.polygonMouseDownPoint.x = coord.x;
+    this.polygonMouseDownPoint.y = coord.y;
+  }
+
+  onPolygonTouchEnd(e:TouchEvent) {
+    e.stopPropagation();
     this.selectedHandlerIndex = -1;
     this.polygonMouseDown = false;
   }
-
 
   onHandlerMouseDown(e:MouseEvent,index:number){
     e.stopPropagation();
@@ -267,7 +311,21 @@ export class ImageCropper {
 
   onHandlerMouseUp(e:MouseEvent){
     e.stopPropagation();
-    this.selectedHandlerIndex = -1;
+    console.log(e);
+    if (!this.usingTouchEvent) {
+      this.selectedHandlerIndex = -1;
+    }
+  }
+
+  onHandlerTouchStart(e:TouchEvent,index:number) {
+    this.usingTouchEvent = true; //Touch events are triggered before mouse events. We can use this to prevent executing mouse events.
+    e.stopPropagation();
+    console.log(e);
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.originalPoints = JSON.parse(JSON.stringify(this.points));
+    this.handlerMouseDownPoint.x = coord.x;
+    this.handlerMouseDownPoint.y = coord.y;
+    this.selectedHandlerIndex = index;
   }
 
   getPointIndexFromHandlerIndex(index:number){
@@ -414,6 +472,9 @@ export class ImageCropper {
           onMouseDown={(e:MouseEvent)=>this.onSVGMouseDown(e)}
           onMouseUp={(e:MouseEvent)=>this.onSVGMouseUp(e)}
           onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
+          onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
+          onTouchEnd={(e:TouchEvent)=>this.onSVGTouchEnd(e)}
+          onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
         >
           {this.renderHandlersMaskDefs()}
           <image href={this.img ? this.img.src : ""}></image>
@@ -425,6 +486,8 @@ export class ImageCropper {
             fill="transparent"
             onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
             onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}
+            onTouchStart={(e:TouchEvent)=>this.onPolygonTouchStart(e)}
+            onTouchEnd={(e:TouchEvent)=>this.onPolygonTouchEnd(e)}
           >
           </polygon>
           {this.renderHandlers()}
