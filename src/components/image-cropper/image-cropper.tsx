@@ -471,6 +471,7 @@ export class ImageCropper {
   async initDDN(){
     window["Dynamsoft"]["DDN"]["DocumentNormalizer"].license = this.license;
     this.ddn = await window["Dynamsoft"]["DDN"]["DocumentNormalizer"].createInstance();
+    this.ddn.maxCvsSideLength = 99999;
   }
 
   getSVGWidth(){
