@@ -464,6 +464,15 @@ export class ImageCropper {
     this.ddn = await window["Dynamsoft"]["DDN"]["DocumentNormalizer"].createInstance();
   }
 
+  getSVGWidth(){
+    if (this.img) {
+      let imgRatio = this.img.naturalWidth/this.img.naturalHeight;
+      let width = this.svgElement.clientHeight * imgRatio;
+      return width;
+    }
+    return "";
+  }
+
   render() {
     return (
       <Host>
@@ -477,6 +486,7 @@ export class ImageCropper {
           class="cropper-svg"
           xmlns="http://www.w3.org/2000/svg"
           viewBox={this.viewBox}
+          width={this.getSVGWidth()}
           onMouseUp={()=>this.onSVGMouseUp()}
           onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
           onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
