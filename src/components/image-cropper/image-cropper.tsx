@@ -190,9 +190,9 @@ export class ImageCropper {
     let size:number = 20;
     if (this.handlersize) {
       try {
-        size = parseInt(this.handlersize)  
+        size = parseInt(this.handlersize);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
     return Math.ceil(size*ratio);
