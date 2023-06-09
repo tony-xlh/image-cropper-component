@@ -86,6 +86,9 @@
     }
 
     async function openCropper(){
+      if (!document.getElementById("original")) {
+        return;
+      }
       let cropper = document.querySelector("image-cropper");
       cropper.img = document.getElementById("original");
       document.getElementById("status").innerText = "Detecting...";
