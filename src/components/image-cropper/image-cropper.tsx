@@ -204,7 +204,7 @@ export class ImageCropper {
     this.handleMoveEvent(e);
   }
 
-  onSVGMouseUp(e:MouseEvent){
+  onSVGMouseUp(){
     if (!this.usingTouchEvent) {
       this.selectedHandlerIndex = -1;
       this.polygonMouseDown = false;
@@ -477,7 +477,7 @@ export class ImageCropper {
           class="cropper-svg"
           xmlns="http://www.w3.org/2000/svg"
           viewBox={this.viewBox}
-          onMouseUp={(e:MouseEvent)=>this.onSVGMouseUp(e)}
+          onMouseUp={()=>this.onSVGMouseUp()}
           onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
           onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
           onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
