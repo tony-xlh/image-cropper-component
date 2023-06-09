@@ -68,8 +68,6 @@ export class ImageCropper {
   }
 
   onCanceled(){
-    console.log("canceled");
-    console.log(this.canceled);
     if (this.canceled){
       console.log("emit");
       this.canceled.emit();
@@ -77,7 +75,6 @@ export class ImageCropper {
   }
 
   onConfirmed(){
-    console.log("confirmed");
     if (this.confirmed){
       this.confirmed.emit();
     }
@@ -174,7 +171,6 @@ export class ImageCropper {
   }
 
   onSVGTouchStart(e:TouchEvent) {
-    console.log(e);
     if (this.selectedHandlerIndex != -1) {
       let coord = this.getMousePosition(e,this.svgElement);
       this.originalPoints = JSON.parse(JSON.stringify(this.points));  //We need this info so that whether we start dragging the rectangular in the center or in the corner will not affect the result.
@@ -183,18 +179,10 @@ export class ImageCropper {
     }
   }
 
-  onSVGTouchEnd(e:TouchEvent) {
-    console.log(e);
-  }
-
   onSVGTouchMove(e:TouchEvent) {
     e.stopPropagation();
     e.preventDefault();
     this.handleMoveEvent(e);
-  }
-
-  onSVGMouseDown(e:MouseEvent){
-    console.log(e);
   }
 
   onSVGMouseUp(e:MouseEvent){
@@ -314,7 +302,6 @@ export class ImageCropper {
 
   onHandlerMouseUp(e:MouseEvent){
     e.stopPropagation();
-    console.log(e);
     if (!this.usingTouchEvent) {
       this.selectedHandlerIndex = -1;
     }
@@ -323,7 +310,6 @@ export class ImageCropper {
   onHandlerTouchStart(e:TouchEvent,index:number) {
     this.usingTouchEvent = true; //Touch events are triggered before mouse events. We can use this to prevent executing mouse events.
     e.stopPropagation();
-    console.log(e);
     let coord = this.getMousePosition(e,this.svgElement);
     this.originalPoints = JSON.parse(JSON.stringify(this.points));
     this.handlerMouseDownPoint.x = coord.x;
@@ -472,11 +458,9 @@ export class ImageCropper {
           class="cropper-svg"
           xmlns="http://www.w3.org/2000/svg"
           viewBox={this.viewBox}
-          onMouseDown={(e:MouseEvent)=>this.onSVGMouseDown(e)}
           onMouseUp={(e:MouseEvent)=>this.onSVGMouseUp(e)}
           onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
           onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
-          onTouchEnd={(e:TouchEvent)=>this.onSVGTouchEnd(e)}
           onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
         >
           {this.renderHandlersMaskDefs()}
