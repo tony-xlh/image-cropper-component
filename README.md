@@ -6,6 +6,8 @@ An image cropper web component which allows users to crop a rectangle or a 4-poi
 
 ![screenshot](https://github.com/tony-xlh/image-cropper-component/assets/5462205/72c427b8-83a5-4110-b88c-95c025fcb5d7)
 
+[Demo video](https://github.com/tony-xlh/image-cropper-component/assets/5462205/754d7d39-d7a6-4a53-b17c-b1d83e399b5b)
+
 [Online demo](https://candid-tarsier-04033c.netlify.app/)
 
 ### Usage
