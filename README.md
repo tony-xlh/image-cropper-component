@@ -2,74 +2,101 @@
 
 # Image Cropper Component
 
-This is a starter project for building a standalone Web Component using Stencil.
+An image cropper web component which allows users to crop a rectangle or a 4-point polygon. Perspective transformation is performed using [Dynamsoft Document Normalizer](https://www.dynamsoft.com/document-normalizer/docs/introduction/) for polygon.
 
-Stencil is also great for building entire apps. For that, use the [stencil-app-starter](https://github.com/ionic-team/stencil-app-starter) instead.
+![screenshot](https://github.com/tony-xlh/image-cropper-component/assets/5462205/72c427b8-83a5-4110-b88c-95c025fcb5d7)
 
-# Stencil
+### Usage
 
-Stencil is a compiler for building fast web apps using Web Components.
+In your HTML, add the component:
 
-Stencil combines the best concepts of the most popular frontend frameworks into a compile-time rather than run-time tool.  Stencil takes TypeScript, JSX, a tiny virtual DOM layer, efficient one-way data binding, an asynchronous rendering pipeline (similar to React Fiber), and lazy-loading out of the box, and generates 100% standards-based Web Components that run in any browser supporting the Custom Elements v1 spec.
-
-Stencil components are just Web Components, so they work in any major framework or with no framework at all.
-
-## Getting Started
-
-To start building a new web component using Stencil, clone this repo to a new directory:
-
-```bash
-git clone https://github.com/ionic-team/stencil-component-starter.git my-component
-cd my-component
-git remote rm origin
+```html
+<image-cropper></image-cropper>
 ```
 
-and run:
+Pass an image element and a predefined region for the cropper:
 
-```bash
-npm install
-npm start
+```js
+let cropper = document.querySelector("image-cropper");
+cropper.img = document.getElementById("original");
+cropper.rect = {x:50,y:50,width:200,height:200}; // or quadrilateral: cropper.quad = {points:[{x:50,y:50},{x:250,y:50},{x:250,y:250},{x:50,y:250}]};
 ```
 
-To build the component for production, run:
+It has several methods related to detecting document borders, getting the coordinates, and getting the cropped image.
 
-```bash
-npm run build
+```ts
+"detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
+"getCroppedImage": (perspectiveTransform?: boolean, colorMode?: "binary" | "gray" | "color") => Promise<string>;
+"getPoints": () => Promise<[Point, Point, Point, Point]>;
+"getQuad": () => Promise<Quad>;
+"getRect": () => Promise<Rect>;
 ```
 
-To run the unit tests for the components, run:
+Props:
 
-```bash
-npm test
+```ts
+"hidefooter"?: string; // hide the default footer with cancel and confirm buttons
+"img"?: HTMLImageElement;
+"license"?: string; // license for Dynamsoft Document Normalizer
+"quad"?: Quad;
+"rect"?: Rect;
 ```
 
-Need help? Check out our docs [here](https://stenciljs.com/docs/my-first-component).
+Interfaces:
 
+```ts
+export interface Quad{
+  points:[Point,Point,Point,Point];
+}
 
-## Naming Components
+export interface Point{
+  x:number;
+  y:number;
+}
 
-When creating new component tags, we recommend _not_ using `stencil` in the component name (ex: `<stencil-datepicker>`). This is because the generated component has little to nothing to do with Stencil; it's just a web component!
+export interface Rect{
+  x:number;
+  y:number;
+  width:number;
+  height:number;
+}
+```
 
-Instead, use a prefix that fits your company or any name for a group of related components. For example, all of the Ionic generated web components use the prefix `ion`.
+PS: If you need to use Dynamsoft Document Normalizer, please include it in your HTML's head:
 
+```html
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-document-normalizer@1.0.12/dist/ddn.js"></script>
+```
 
-## Using this component
-
-There are three strategies we recommend for using web components built with Stencil.
-
-The first step for all three of these strategies is to [publish to NPM](https://docs.npmjs.com/getting-started/publishing-npm-packages).
+## Install this component
 
 ### Script tag
 
-- Put a script tag similar to this `<script type='module' src='https://unpkg.com/my-component@0.0.1/dist/my-component.esm.js'></script>` in the head of your index.html
+- Put a script tag similar to this 
+
+   ```html
+   <script type="module">
+     import { defineCustomElements } from 'https://cdn.jsdelivr.net/npm/image-cropper-component/dist/esm/loader.js';
+     defineCustomElements();
+   </script>
+   ```
+   
+   in the head of your index.html
+   
 - Then you can use the element anywhere in your template, JSX, html etc
 
 ### Node Modules
-- Run `npm install my-component --save`
-- Put a script tag similar to this `<script type='module' src='node_modules/my-component/dist/my-component.esm.js'></script>` in the head of your index.html
+- Run `npm install image-cropper-component --save`
+- Put a script tag similar to this 
+
+   ```html
+   <script type="module">
+     import { defineCustomElements } from 'node_modules/image-cropper-component/dist/esm/loader.js';
+     defineCustomElements();
+   </script>
+   ```
+   
+   in the head of your index.html
+   
 - Then you can use the element anywhere in your template, JSX, html etc
 
-### In a stencil-starter app
-- Run `npm install my-component --save`
-- Add an import to the npm packages `import my-component;`
-- Then you can use the element anywhere in your template, JSX, html etc
