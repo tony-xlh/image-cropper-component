@@ -479,7 +479,7 @@ export class ImageCropper {
       let width = this.svgElement.clientHeight * imgRatio;
       return width;
     }
-    return "";
+    return "100%";
   }
 
   render() {

@@ -7,13 +7,14 @@
 
 ## Properties
 
-| Property     | Attribute    | Description | Type               | Default     |
-| ------------ | ------------ | ----------- | ------------------ | ----------- |
-| `hidefooter` | `hidefooter` |             | `string`           | `undefined` |
-| `img`        | --           |             | `HTMLImageElement` | `undefined` |
-| `license`    | `license`    |             | `string`           | `undefined` |
-| `quad`       | --           |             | `Quad`             | `undefined` |
-| `rect`       | --           |             | `Rect`             | `undefined` |
+| Property      | Attribute     | Description | Type               | Default     |
+| ------------- | ------------- | ----------- | ------------------ | ----------- |
+| `handlersize` | `handlersize` |             | `string`           | `undefined` |
+| `hidefooter`  | `hidefooter`  |             | `string`           | `undefined` |
+| `img`         | --            |             | `HTMLImageElement` | `undefined` |
+| `license`     | `license`     |             | `string`           | `undefined` |
+| `quad`        | --            |             | `Quad`             | `undefined` |
+| `rect`        | --            |             | `Rect`             | `undefined` |
 
 
 ## Events
