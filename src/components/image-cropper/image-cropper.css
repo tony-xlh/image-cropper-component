@@ -3,6 +3,11 @@
   justify-content: center;
   height: 100%;
   background: black;
+  --line-color: green;
+}
+
+.cropper-controls {
+  stroke:var(--line-color);
 }
 
 .footer {
@@ -34,7 +39,6 @@
 .items .item:last-child {
   text-align: right;
 }
-
 
 .accept-use img {
   width: 2.5em;
