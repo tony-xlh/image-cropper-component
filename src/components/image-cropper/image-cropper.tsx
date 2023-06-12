@@ -338,6 +338,7 @@ export class ImageCropper {
   onHandlerTouchStart(e:TouchEvent,index:number) {
     this.usingTouchEvent = true; //Touch events are triggered before mouse events. We can use this to prevent executing mouse events.
     e.stopPropagation();
+    this.polygonMouseDown = false;
     let coord = this.getMousePosition(e,this.svgElement);
     this.originalPoints = JSON.parse(JSON.stringify(this.points));
     this.handlerMouseDownPoint.x = coord.x;
