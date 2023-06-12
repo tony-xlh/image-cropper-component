@@ -59,6 +59,7 @@ export class ImageCropper {
       const point3:Point = {x:newValue.x+newValue.width,y:newValue.y+newValue.height};
       const point4:Point = {x:newValue.x,y:newValue.y+newValue.height};
       this.points = [point1,point2,point3,point4];
+      this.quad = undefined;
     }
   }
 
@@ -66,6 +67,7 @@ export class ImageCropper {
   watchQuadPropHandler(newValue: Quad) {
     if (newValue) {
       this.points = newValue.points;
+      this.rect = undefined;
     }
   }
 
