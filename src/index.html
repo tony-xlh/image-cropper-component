@@ -26,8 +26,14 @@
     <div>
       Load local image:
       <input type="file" id="file" onchange="loadImageFromFile();" accept=".jpg,.jpeg,.png,.bmp" />
-      <button onclick="openCropper()">Open Cropper</button>
-      <span id="status"></span>
+      <div>
+        <button onclick="openCropper()">Open Cropper</button>
+        <label>
+          Detect with <a href="https://www.dynamsoft.com/document-normalizer/docs/">Dynamsoft Document Normalizer</a>:
+          <input type="checkbox" id="enableDDN" checked/>
+        </label>
+        <span id="status"></span>
+      </div>
     </div>
     <div>
       <div>Original:</div>
@@ -92,14 +98,16 @@
       }
       let cropper = document.querySelector("image-cropper");
       cropper.img = document.getElementById("original");
-      document.getElementById("status").innerText = "Detecting...";
       let quads = [];
-      try {
-        quads = await cropper.detect(cropper.img);  
-      } catch (error) {
-        console.log(error);
+      if (document.getElementById("enableDDN").checked === true) {
+        document.getElementById("status").innerText = "Detecting...";
+        try {
+          quads = await cropper.detect(cropper.img);  
+        } catch (error) {
+          console.log(error);
+        }
+        document.getElementById("status").innerText = "";
       }
-      document.getElementById("status").innerText = "";
       if (quads.length > 0) {
         cropper.quad = quads[0].location;
       }else{
