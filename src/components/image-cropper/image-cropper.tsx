@@ -32,6 +32,7 @@ export class ImageCropper {
   originalPoints:[Point,Point,Point,Point] = undefined;
   ddn:DocumentNormalizer|undefined;
   usingTouchEvent:boolean = false;
+  usingQuad = false;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
@@ -54,20 +55,20 @@ export class ImageCropper {
   @Watch('rect')
   watchRectPropHandler(newValue: Rect) {
     if (newValue) {
+      this.usingQuad = false;
       const point1:Point = {x:newValue.x,y:newValue.y};
       const point2:Point = {x:newValue.x+newValue.width,y:newValue.y};
       const point3:Point = {x:newValue.x+newValue.width,y:newValue.y+newValue.height};
       const point4:Point = {x:newValue.x,y:newValue.y+newValue.height};
       this.points = [point1,point2,point3,point4];
-      this.quad = undefined;
     }
   }
 
   @Watch('quad')
   watchQuadPropHandler(newValue: Quad) {
     if (newValue) {
+      this.usingQuad = true;
       this.points = newValue.points;
-      this.rect = undefined;
     }
   }
 
@@ -252,7 +253,7 @@ export class ImageCropper {
         let selectedPoint = newPoints[pointIndex];
         selectedPoint.x = this.originalPoints[pointIndex].x + offsetX;
         selectedPoint.y = this.originalPoints[pointIndex].y + offsetY;
-        if (!this.quad) { //rect mode
+        if (this.usingQuad === false) { //rect mode
           if (pointIndex === 0) {
             newPoints[1].y = selectedPoint.y;
             newPoints[3].x = selectedPoint.x;
