@@ -48,6 +48,7 @@
     </div>
   </body>
   <script>
+    let usingQuad = false;
     window.onload = function(){
       registerEventsForCropper();
     }
@@ -83,7 +84,7 @@
         document.getElementById("cropper").style.display = "none";
         let quad = await cropper.getQuad();
         let rect = await cropper.getRect();
-        let croppedImage = await cropper.getCroppedImage(true,"color");
+        let croppedImage = await cropper.getCroppedImage(usingQuad,"color");
         document.getElementById("cropped").src = croppedImage;
 
       }
@@ -109,8 +110,10 @@
         document.getElementById("status").innerText = "";
       }
       if (quads.length > 0) {
+        usingQuad = true;
         cropper.quad = quads[0].location;
       }else{
+        usingQuad = false;
         cropper.rect = {x:50,y:50,width:200,height:200};
       }
       document.getElementById("cropper").style.display = "";
