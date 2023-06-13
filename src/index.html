@@ -101,6 +101,7 @@
       cropper.img = document.getElementById("original");
       let quads = [];
       if (document.getElementById("enableDDN").checked === true) {
+        usingQuad = true;
         document.getElementById("status").innerText = "Detecting...";
         try {
           quads = await cropper.detect(cropper.img);  
@@ -108,10 +109,11 @@
           console.log(error);
         }
         document.getElementById("status").innerText = "";
-      }
-      if (quads.length > 0) {
-        usingQuad = true;
-        cropper.quad = quads[0].location;
+        if (quads.length>0) {
+          cropper.quad = quads[0].location;
+        }else{
+          cropper.quad = {points:[{x:50,y:50},{x:250,y:50},{x:250,y:250},{x:50,y:250}]};
+        }
       }else{
         usingQuad = false;
         cropper.rect = {x:50,y:50,width:200,height:200};
