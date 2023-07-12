@@ -66,6 +66,12 @@ export interface Rect{
 }
 ```
 
+You can customize the style of the selection with the following CSS:
+
+```css
+ --line-color:orange;
+```
+
 PS: If you need to use Dynamsoft Document Normalizer, please include it in your HTML's head:
 
 ```html
