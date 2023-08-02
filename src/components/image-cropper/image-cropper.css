@@ -68,6 +68,6 @@
 
 .cropper-svg .inactive-selection {
   stroke:var(--line-color);
-  stroke-dasharray:5,5;
+  stroke-dasharray:10,10;
   cursor:pointer;
 }

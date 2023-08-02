@@ -136,7 +136,7 @@ export class ImageCropper {
           <polygon
             points={this.getPointsDataFromSelection(selection)}
             class="inactive-selection"
-            stroke-width={2 * this.getRatio()}
+            stroke-width={4 * this.getRatio()}
             fill="transparent"
             onMouseUp={()=>this.onSelectionClicked(index)}
             onTouchEnd={()=>this.onSelectionClicked(index)}
