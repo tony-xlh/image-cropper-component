@@ -5,15 +5,15 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { Point, Quad, Rect } from "./components/image-cropper/image-cropper";
+import { CropOptions, Point, Quad, Rect } from "./components/image-cropper/image-cropper";
 import { DetectedQuadResult } from "dynamsoft-document-normalizer";
-export { Point, Quad, Rect } from "./components/image-cropper/image-cropper";
+export { CropOptions, Point, Quad, Rect } from "./components/image-cropper/image-cropper";
 export { DetectedQuadResult } from "dynamsoft-document-normalizer";
 export namespace Components {
     interface ImageCropper {
         "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
         "getAllSelections": (convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>;
-        "getCroppedImage": (perspectiveTransform?: boolean, colorMode?: "binary" | "gray" | "color") => Promise<string>;
+        "getCroppedImage": (options: CropOptions) => Promise<string>;
         "getPoints": () => Promise<[Point, Point, Point, Point]>;
         "getQuad": () => Promise<Quad>;
         "getRect": () => Promise<Rect>;

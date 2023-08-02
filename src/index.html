@@ -11,6 +11,7 @@
       img {
         max-width: 100%;
         max-height: 350px;
+        display: block;
       }
 
       #cropper {
@@ -40,7 +41,6 @@
       <div class="orginalImageContainer"></div>
       <div>Cropped:</div>
       <div class="croppedImageContainer">
-        <img id="cropped" />
       </div>
     </div>
     <div id="cropper" style="display:none;">
@@ -82,21 +82,25 @@
       }
       const confirmed = async () => {
         document.getElementById("cropper").style.display = "none";
-        let quad = await cropper.getQuad();
-        let rect = await cropper.getRect();
-        let croppedImage = await cropper.getCroppedImage(usingQuad,"color");
-        document.getElementById("cropped").src = croppedImage;
+        const selections = await cropper.getAllSelections();
+        let container = document.getElementsByClassName("croppedImageContainer")[0];
+        container.innerHTML = "";
+        for (let index = 0; index < selections.length; index++) {
+          const selection = selections[index];
+          let croppedImage = await cropper.getCroppedImage({selection:selection,colorMode:"color"});
+          let image = document.createElement("img");
+          image.src = croppedImage;
+          container.appendChild(image);
+        }
+        
       }
       const selectionClicked = async (e) => {
         const index = e.detail;
-        let selections = await cropper.getAllSelections("quad");
-        console.log(selections);
+        let selections = await cropper.getAllSelections();
         let selectedSelection = selections[index];
         if ("width" in selectedSelection) {
-          console.log("got rect");
           cropper.rect = selectedSelection;
         }else{
-          console.log("got quad");
           cropper.quad = selectedSelection;
         }
         selections.splice(index,1);

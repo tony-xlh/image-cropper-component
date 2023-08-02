@@ -17,6 +17,12 @@ export interface Rect{
   height:number;
 }
 
+export interface CropOptions {
+  perspectiveTransform?:boolean;
+  colorMode?:"binary"|"gray"|"color";
+  selection?:Quad|Rect;
+}
+
 @Component({
   tag: 'image-cropper',
   styleUrl: 'image-cropper.css',
@@ -514,29 +520,47 @@ export class ImageCropper {
   }
 
   @Method()
-  async getCroppedImage(perspectiveTransform?:boolean,colorMode?:"binary"|"gray"|"color"):Promise<string>
+  async getCroppedImage(options:CropOptions):Promise<string>
   {
-    if (perspectiveTransform && window["Dynamsoft"]["DDN"]) {
+    if (options.perspectiveTransform && window["Dynamsoft"]["DDN"]) {
       if (!this.ddn) {
         await this.initDDN();
       }
-      if (colorMode) {
+      if (options.colorMode) {
         let template;
-        if (colorMode === "binary") {
+        if (options.colorMode === "binary") {
           template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_BINARY\"}]}";
-        } else if (colorMode === "gray") {
+        } else if (options.colorMode === "gray") {
           template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_GRAYSCALE\"}]}";
         } else {
           template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_COLOUR\"}]}";
         }
         await this.ddn.setRuntimeSettings(template);
       }
-      let quad = await this.getQuad();
+      let quad:Quad;
+      if (options.selection) {
+        if ("width" in options.selection) {
+          quad = {points:this.getPointsFromRect(options.selection)};
+        }else{
+          quad = options.selection;
+        }
+      }else{
+        quad = await this.getQuad();
+      }
       let normalizedResult = await this.ddn.normalize(this.img,{quad:quad});
       return normalizedResult.image.toCanvas().toDataURL();
     }else{
       let ctx = this.canvasElement.getContext("2d");
-      let rect = await this.getRect();
+      let rect:Rect;
+      if (options.selection) {
+        if ("width" in options.selection) {
+          rect = options.selection;
+        }else{
+          rect = this.getRectFromPoints(options.selection.points);
+        }
+      }else{
+        rect = await this.getRect();
+      }
       this.canvasElement.width = rect.width;
       this.canvasElement.height = rect.height;
       ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
