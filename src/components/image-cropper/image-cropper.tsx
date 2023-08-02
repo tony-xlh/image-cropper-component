@@ -436,6 +436,24 @@ export class ImageCropper {
   }
 
   @Method()
+  async getAllSelections():Promise<(Quad|Rect)[]>
+  {
+    let all = [];
+    for (let index = 0; index < this.inactiveSelections.length; index++) {
+      const selection = this.inactiveSelections[index];
+      all.push(selection);
+    }
+    if (this.usingQuad) {
+      const quad = await this.getQuad();
+      all.push(quad);
+    }else{
+      const rect = await this.getRect();
+      all.push(rect);
+    }
+    return all;
+  }
+
+  @Method()
   async getPoints():Promise<[Point,Point,Point,Point]>
   {
     return this.points;

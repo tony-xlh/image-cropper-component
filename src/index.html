@@ -88,8 +88,17 @@
         document.getElementById("cropped").src = croppedImage;
       }
       const selectionClicked = async (e) => {
-        console.log(e);
-        console.log(e.detail);
+        const index = e.detail;
+        let selections = await cropper.getAllSelections();
+        console.log(selections);
+        let selectedSelection = selections[index];
+        if ("width" in selectedSelection) {
+          cropper.rect = selectedSelection;
+        }else{
+          cropper.quad = selectedSelection;
+        }
+        selections.splice(index,1);
+        cropper.inactiveSelections = selections;
       }
 
       cropper.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==";
