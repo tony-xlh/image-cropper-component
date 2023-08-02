@@ -147,8 +147,12 @@
         }
       }else{
         usingQuad = false;
-        cropper.rect = {x:50,y:50,width:200,height:200};
-        cropper.inactiveSelections = [{x:100,y:100,width:200,height:200},{x:150,y:150,width:200,height:200}];
+        const x = cropper.img.naturalWidth * 0.1;
+        const y = cropper.img.naturalHeight * 0.1;
+        const w = cropper.img.naturalWidth * 0.8;
+        const h = cropper.img.naturalHeight * 0.8;
+        cropper.rect = {x:x,y:y,width:w,height:h};
+        //cropper.inactiveSelections = [{x:100,y:100,width:200,height:200},{x:150,y:150,width:200,height:200}];
         //console.log(cropper);
       }
       document.getElementById("cropper").style.display = "";
