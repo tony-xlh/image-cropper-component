@@ -527,6 +527,10 @@ export class ImageCropper {
       if (!("width" in options.selection)) {
         isQuad = true;
       }
+    }else{
+      if (this.usingQuad) {
+        isQuad = true;
+      }
     }
     if (options.perspectiveTransform && window["Dynamsoft"]["DDN"] && isQuad) {
       if (!this.ddn) {
