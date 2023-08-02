@@ -522,7 +522,13 @@ export class ImageCropper {
   @Method()
   async getCroppedImage(options:CropOptions):Promise<string>
   {
-    if (options.perspectiveTransform && window["Dynamsoft"]["DDN"]) {
+    let isQuad = false;
+    if (options.selection) {
+      if (!("width" in options.selection)) {
+        isQuad = true;
+      }
+    }
+    if (options.perspectiveTransform && window["Dynamsoft"]["DDN"] && isQuad) {
       if (!this.ddn) {
         await this.initDDN();
       }
