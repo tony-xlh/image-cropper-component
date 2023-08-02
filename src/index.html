@@ -119,6 +119,7 @@
       }
       let cropper = document.querySelector("image-cropper");
       cropper.img = document.getElementById("original");
+      cropper.inactiveSelections = [];
       let quads = [];
       if (document.getElementById("enableDDN").checked === true) {
         usingQuad = true;
@@ -128,9 +129,18 @@
         } catch (error) {
           console.log(error);
         }
+        console.log(quads);
         document.getElementById("status").innerText = "";
         if (quads.length>0) {
           cropper.quad = quads[0].location;
+          if (quads.length>1) {
+            let inactiveSelections = [];
+            for (let index = 1; index < quads.length; index++) {
+              const quad = quads[index];
+              inactiveSelections.push(quad.location);
+            }
+            cropper.inactiveSelections = inactiveSelections;
+          }
         }else{
           cropper.quad = {points:[{x:50,y:50},{x:250,y:50},{x:250,y:250},{x:50,y:250}]};
         }
