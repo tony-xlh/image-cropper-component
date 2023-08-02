@@ -65,3 +65,9 @@
 .hidden-canvas {
   display: none;
 }
+
+.cropper-svg .inactive-selection {
+  stroke:var(--line-color);
+  stroke-dasharray:5,5;
+  cursor:pointer;
+}

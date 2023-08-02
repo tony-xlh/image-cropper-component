@@ -39,11 +39,13 @@ export class ImageCropper {
   @Prop() license?: string;
   @Prop() hidefooter?: string;
   @Prop() handlersize?: string;
+  @Prop() inactiveSelections?: (Quad|Rect)[];
   @State() viewBox:string = "0 0 1280 720";
   @State() selectedHandlerIndex:number = -1;
   @State() points:[Point,Point,Point,Point] = undefined;
   @Event() confirmed?: EventEmitter<void>;
   @Event() canceled?: EventEmitter<void>;
+  @Event() selectionClicked?: EventEmitter<number>;
 
   @Watch('img')
   watchImgPropHandler(newValue: HTMLImageElement) {
@@ -56,12 +58,16 @@ export class ImageCropper {
   watchRectPropHandler(newValue: Rect) {
     if (newValue) {
       this.usingQuad = false;
-      const point1:Point = {x:newValue.x,y:newValue.y};
-      const point2:Point = {x:newValue.x+newValue.width,y:newValue.y};
-      const point3:Point = {x:newValue.x+newValue.width,y:newValue.y+newValue.height};
-      const point4:Point = {x:newValue.x,y:newValue.y+newValue.height};
-      this.points = [point1,point2,point3,point4];
+      this.points = this.getPointsFromRect(newValue);
     }
+  }
+
+  getPointsFromRect(rect:Rect):[Point,Point,Point,Point]{
+    const point1:Point = {x:rect.x,y:rect.y};
+    const point2:Point = {x:rect.x+rect.width,y:rect.y};
+    const point3:Point = {x:rect.x+rect.width,y:rect.y+rect.height};
+    const point4:Point = {x:rect.x,y:rect.y+rect.height};
+    return [point1,point2,point3,point4];
   }
 
   @Watch('quad')
@@ -112,6 +118,47 @@ export class ImageCropper {
         </section>
       </div>
     )
+  }
+
+  rendenInactiveSelections(){
+    if (!this.inactiveSelections) {
+      return "";
+    }
+    return (
+      <Fragment>
+        {this.inactiveSelections.map((selection,index) => (
+          <polygon
+            points={this.getPointsDataFromSelection(selection)}
+            class="inactive-selection"
+            stroke-width={2 * this.getRatio()}
+            fill="transparent"
+            onMouseUp={()=>this.onSelectionClicked(index)}
+            onTouchEnd={()=>this.onSelectionClicked(index)}
+          >
+         </polygon>
+        ))}
+      </Fragment>
+    );
+  }
+
+  onSelectionClicked(index:number) {
+    if (this.selectionClicked) {
+      this.selectionClicked.emit(index);
+    }
+  }
+
+  getPointsDataFromSelection(selection:Quad|Rect){
+    let points:Point[] = [];
+    if ("width" in selection) { //is Rect
+      points = this.getPointsFromRect(selection);
+    }else{
+      points = selection.points;
+    }
+    let pointsData = points[0].x + "," + points[0].y + " ";
+    pointsData = pointsData + points[1].x + "," + points[1].y +" ";
+    pointsData = pointsData + points[2].x + "," + points[2].y +" ";
+    pointsData = pointsData + points[3].x + "," + points[3].y;
+    return pointsData;
   }
 
   renderHandlers(){
@@ -520,6 +567,7 @@ export class ImageCropper {
             onTouchEnd={(e:TouchEvent)=>this.onPolygonTouchEnd(e)}
           >
           </polygon>
+          {this.rendenInactiveSelections()}
           {this.renderHandlers()}
         </svg>
         {this.renderFooter()}

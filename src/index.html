@@ -86,11 +86,16 @@
         let rect = await cropper.getRect();
         let croppedImage = await cropper.getCroppedImage(usingQuad,"color");
         document.getElementById("cropped").src = croppedImage;
-
       }
+      const selectionClicked = async (e) => {
+        console.log(e);
+        console.log(e.detail);
+      }
+
       cropper.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==";
       cropper.addEventListener("canceled",canceled);
       cropper.addEventListener("confirmed",confirmed);
+      cropper.addEventListener("selectionClicked",selectionClicked)
     }
 
     async function openCropper(){
@@ -117,6 +122,8 @@
       }else{
         usingQuad = false;
         cropper.rect = {x:50,y:50,width:200,height:200};
+        cropper.inactiveSelections = [{x:100,y:100,width:200,height:200},{x:150,y:150,width:200,height:200}];
+        //console.log(cropper);
       }
       document.getElementById("cropper").style.display = "";
     }

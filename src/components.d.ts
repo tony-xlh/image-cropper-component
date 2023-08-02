@@ -19,6 +19,7 @@ export namespace Components {
         "handlersize"?: string;
         "hidefooter"?: string;
         "img"?: HTMLImageElement;
+        "inactiveSelections"?: (Quad|Rect)[];
         "license"?: string;
         "quad"?: Quad;
         "rect"?: Rect;
@@ -44,9 +45,11 @@ declare namespace LocalJSX {
         "handlersize"?: string;
         "hidefooter"?: string;
         "img"?: HTMLImageElement;
+        "inactiveSelections"?: (Quad|Rect)[];
         "license"?: string;
         "onCanceled"?: (event: ImageCropperCustomEvent<void>) => void;
         "onConfirmed"?: (event: ImageCropperCustomEvent<void>) => void;
+        "onSelectionClicked"?: (event: ImageCropperCustomEvent<number>) => void;
         "quad"?: Quad;
         "rect"?: Rect;
     }
