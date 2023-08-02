@@ -2,7 +2,7 @@
 
 # Image Cropper Component
 
-An image cropper web component which allows users to crop a rectangle or a 4-point polygon. Perspective transformation is performed using [Dynamsoft Document Normalizer](https://www.dynamsoft.com/document-normalizer/docs/introduction/) for polygon.
+An image cropper web component which allows users to crop a rectangle or a 4-point polygon. Perspective transformation is performed using [Dynamsoft Document Normalizer](https://www.dynamsoft.com/document-normalizer/docs/introduction/) for polygon. It supports editing multiple objects in one image.
 
 ![polygon-normalizing](https://github.com/tony-xlh/image-cropper-component/assets/5462205/7ff43017-eb50-4da1-9b53-f7a825ca11da)
 
@@ -29,8 +29,9 @@ cropper.rect = {x:50,y:50,width:200,height:200}; // or quadrilateral: cropper.qu
 It has several methods related to detecting document borders, getting the coordinates, and getting the cropped image.
 
 ```ts
-"detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
-"getCroppedImage": (perspectiveTransform?: boolean, colorMode?: "binary" | "gray" | "color") => Promise<string>;
+"detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement, template?:string) => Promise<DetectedQuadResult[]>;
+"getAllSelections": (convertTo?:"rect"|"quad") => Promise<(Quad|Rect)[]>;
+"getCroppedImage": (options:CropOptions) => Promise<string>;
 "getPoints": () => Promise<[Point, Point, Point, Point]>;
 "getQuad": () => Promise<Quad>;
 "getRect": () => Promise<Rect>;
@@ -44,6 +45,7 @@ Props:
 "license"?: string; // license for Dynamsoft Document Normalizer
 "quad"?: Quad;
 "rect"?: Rect;
+"inactiveSelections": (Quad|Rect)[] // other selections which are not active
 ```
 
 Interfaces:
@@ -64,6 +66,20 @@ export interface Rect{
   width:number;
   height:number;
 }
+
+export interface CropOptions {
+  perspectiveTransform?:boolean;
+  colorMode?:"binary"|"gray"|"color";
+  selection?:Quad|Rect;
+}
+```
+
+Events:
+
+```ts
+"onCanceled"?: (event: ImageCropperCustomEvent<void>) => void;
+"onConfirmed"?: (event: ImageCropperCustomEvent<void>) => void;
+"onSelectionClicked"?: (event: ImageCropperCustomEvent<number>) => void;
 ```
 
 PS: If you need to use Dynamsoft Document Normalizer, please include it in your HTML's head:
