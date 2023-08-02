@@ -11,7 +11,7 @@ export { CropOptions, Point, Quad, Rect } from "./components/image-cropper/image
 export { DetectedQuadResult } from "dynamsoft-document-normalizer";
 export namespace Components {
     interface ImageCropper {
-        "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
+        "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement, template?: string) => Promise<DetectedQuadResult[]>;
         "getAllSelections": (convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>;
         "getCroppedImage": (options: CropOptions) => Promise<string>;
         "getPoints": () => Promise<[Point, Point, Point, Point]>;

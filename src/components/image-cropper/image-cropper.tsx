@@ -569,11 +569,14 @@ export class ImageCropper {
   }
 
   @Method()
-  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResult[]>
+  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement,template?:string):Promise<DetectedQuadResult[]>
   {
     if (window["Dynamsoft"]["DDN"]["DocumentNormalizer"]) {
       if (!this.ddn) {
         await this.initDDN();
+      }
+      if (template) {
+        await this.ddn.setRuntimeSettings(template);
       }
       let results:DetectedQuadResult[] = await this.ddn.detectQuad(source);
       return results;
