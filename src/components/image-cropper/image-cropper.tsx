@@ -573,6 +573,7 @@ export class ImageCropper {
         >
           {this.renderHandlersMaskDefs()}
           <image href={this.img ? this.img.src : ""}></image>
+          {this.rendenInactiveSelections()}
           <polygon
             mask="url(#myMask)"
             points={this.getPointsData()}
@@ -585,7 +586,6 @@ export class ImageCropper {
             onTouchEnd={(e:TouchEvent)=>this.onPolygonTouchEnd(e)}
           >
           </polygon>
-          {this.rendenInactiveSelections()}
           {this.renderHandlers()}
         </svg>
         {this.renderFooter()}
