@@ -89,12 +89,14 @@
       }
       const selectionClicked = async (e) => {
         const index = e.detail;
-        let selections = await cropper.getAllSelections();
+        let selections = await cropper.getAllSelections("quad");
         console.log(selections);
         let selectedSelection = selections[index];
         if ("width" in selectedSelection) {
+          console.log("got rect");
           cropper.rect = selectedSelection;
         }else{
+          console.log("got quad");
           cropper.quad = selectedSelection;
         }
         selections.splice(index,1);

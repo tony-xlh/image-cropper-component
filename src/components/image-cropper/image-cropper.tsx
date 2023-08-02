@@ -436,14 +436,31 @@ export class ImageCropper {
   }
 
   @Method()
-  async getAllSelections():Promise<(Quad|Rect)[]>
+  async getAllSelections(convertTo?:"rect"|"quad"):Promise<(Quad|Rect)[]>
   {
     let all = [];
     for (let index = 0; index < this.inactiveSelections.length; index++) {
-      const selection = this.inactiveSelections[index];
+      let selection = this.inactiveSelections[index];
+      if (convertTo) {
+        if ("width" in selection && convertTo === "quad") {
+          selection = {points:this.getPointsFromRect(selection)};
+        }else if (!("width" in selection) && convertTo === "rect"){
+          selection = this.getRectFromPoints(selection.points);
+        }
+      }
       all.push(selection);
     }
-    if (this.usingQuad) {
+    let useQuad = true;
+    if (convertTo) {
+      if (convertTo === "rect") {
+        useQuad = false;
+      }
+    }else{
+      if (!this.usingQuad) {
+        useQuad = false;
+      }
+    }
+    if (useQuad) {
       const quad = await this.getQuad();
       all.push(quad);
     }else{
@@ -468,11 +485,15 @@ export class ImageCropper {
   @Method()
   async getRect():Promise<Rect>
   {
+    return this.getRectFromPoints(this.points);
+  }
+
+  getRectFromPoints(points:Point[]):Rect{
     let minX:number;
     let minY:number;
     let maxX:number;
     let maxY:number;
-    for (const point of this.points) {
+    for (const point of points) {
       if (!minX) {
         minX = point.x;
         maxX = point.x;
