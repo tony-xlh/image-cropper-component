@@ -7,27 +7,29 @@
 
 ## Properties
 
-| Property      | Attribute     | Description | Type               | Default     |
-| ------------- | ------------- | ----------- | ------------------ | ----------- |
-| `handlersize` | `handlersize` |             | `string`           | `undefined` |
-| `hidefooter`  | `hidefooter`  |             | `string`           | `undefined` |
-| `img`         | --            |             | `HTMLImageElement` | `undefined` |
-| `license`     | `license`     |             | `string`           | `undefined` |
-| `quad`        | --            |             | `Quad`             | `undefined` |
-| `rect`        | --            |             | `Rect`             | `undefined` |
+| Property             | Attribute     | Description | Type               | Default     |
+| -------------------- | ------------- | ----------- | ------------------ | ----------- |
+| `handlersize`        | `handlersize` |             | `string`           | `undefined` |
+| `hidefooter`         | `hidefooter`  |             | `string`           | `undefined` |
+| `img`                | --            |             | `HTMLImageElement` | `undefined` |
+| `inactiveSelections` | --            |             | `(Quad \| Rect)[]` | `undefined` |
+| `license`            | `license`     |             | `string`           | `undefined` |
+| `quad`               | --            |             | `Quad`             | `undefined` |
+| `rect`               | --            |             | `Rect`             | `undefined` |
 
 
 ## Events
 
-| Event       | Description | Type                |
-| ----------- | ----------- | ------------------- |
-| `canceled`  |             | `CustomEvent<void>` |
-| `confirmed` |             | `CustomEvent<void>` |
+| Event              | Description | Type                  |
+| ------------------ | ----------- | --------------------- |
+| `canceled`         |             | `CustomEvent<void>`   |
+| `confirmed`        |             | `CustomEvent<void>`   |
+| `selectionClicked` |             | `CustomEvent<number>` |
 
 
 ## Methods
 
-### `detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>`
+### `detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement, template?: string) => Promise<DetectedQuadResult[]>`
 
 
 
@@ -37,7 +39,17 @@ Type: `Promise<DetectedQuadResult[]>`
 
 
 
-### `getCroppedImage(perspectiveTransform?: boolean, colorMode?: "binary" | "gray" | "color") => Promise<string>`
+### `getAllSelections(convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>`
+
+
+
+#### Returns
+
+Type: `Promise<(Quad | Rect)[]>`
+
+
+
+### `getCroppedImage(options: CropOptions) => Promise<string>`
 
 
 
