@@ -151,7 +151,7 @@ export class ImageCropper {
             stroke-width={this.inActiveStroke * this.getRatio()}
             fill="transparent"
             onMouseUp={()=>this.onSelectionClicked(index)}
-            onTouchEnd={()=>this.onSelectionClicked(index)}
+            onTouchStart={()=>this.onSelectionClicked(index)}
           >
          </polygon>
         ))}
