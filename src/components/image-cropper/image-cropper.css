@@ -84,6 +84,9 @@
 
 .cropper-svg .inactive-selection {
   stroke:var(--line-color);
-  stroke-dasharray:10,10;
   cursor:pointer;
+}
+
+.dashed-10 {
+  stroke-dasharray:10,10;
 }

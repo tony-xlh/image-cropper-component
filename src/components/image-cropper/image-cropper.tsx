@@ -135,7 +135,7 @@ export class ImageCropper {
         {this.inactiveSelections.map((selection,index) => (
           <polygon
             points={this.getPointsDataFromSelection(selection)}
-            class="inactive-selection"
+            class="inactive-selection dashed-10"
             stroke-width={4 * this.getRatio()}
             fill="transparent"
             onMouseUp={()=>this.onSelectionClicked(index)}
@@ -188,32 +188,6 @@ export class ImageCropper {
           />
         ))}
       </Fragment>
-    )
-  }
-
-  renderHandlersMaskDefs(){
-    if (!this.points) {
-      return (<div></div>)
-    }
-    return (
-      <defs>
-        <mask id="myMask">
-          <rect 
-            x="0" 
-            y="0" 
-            width={this.img ? this.img.naturalWidth : "0"}
-            height={this.img ? this.img.naturalHeight : "0"}
-            fill="white" />
-          {this.handlers.map(index => (
-            <rect 
-              x={this.getHandlerPos(index,"x")} 
-              y={this.getHandlerPos(index,"y")} 
-              width={this.getHandlerSize()}
-              height={this.getHandlerSize()} fill="black" 
-            />
-          ))}
-        </mask>
-      </defs>
     )
   }
 
@@ -630,13 +604,11 @@ export class ImageCropper {
             onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
             onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
           >
-            {this.renderHandlersMaskDefs()}
             <image href={this.img ? this.img.src : ""}></image>
             {this.rendenInactiveSelections()}
             <polygon
-              mask="url(#myMask)"
               points={this.getPointsData()}
-              class="cropper-controls"
+              class="cropper-controls dashed-10"
               stroke-width={2 * this.getRatio()}
               fill="transparent"
               onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
