@@ -33,6 +33,7 @@ export class ImageCropper {
   polygonMouseDown:boolean = false;
   polygonMouseDownPoint:Point = {x:0,y:0};
   handlerMouseDownPoint:Point = {x:0,y:0};
+  root:HTMLElement;
   svgElement:SVGElement;
   canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
@@ -47,6 +48,8 @@ export class ImageCropper {
   @Prop() handlersize?: string;
   @Prop() inactiveSelections?: (Quad|Rect)[];
   @State() viewBox:string = "0 0 1280 720";
+  @State() activeStroke:number = 2;
+  @State() inActiveStroke:number = 4;
   @State() selectedHandlerIndex:number = -1;
   @State() points:[Point,Point,Point,Point] = undefined;
   @Event() confirmed?: EventEmitter<void>;
@@ -57,6 +60,16 @@ export class ImageCropper {
   watchImgPropHandler(newValue: HTMLImageElement) {
     if (newValue) {
       this.viewBox = "0 0 "+newValue.naturalWidth+" "+newValue.naturalHeight;
+      if (this.root) {
+        const inActiveStroke = parseInt(this.root.style.getPropertyValue("--inactive-stroke"));
+        const activeStroke = parseInt(this.root.style.getPropertyValue("--active-stroke"));
+        if (inActiveStroke){
+          this.inActiveStroke = inActiveStroke;
+        }
+        if (activeStroke){
+          this.activeStroke = activeStroke;
+        }
+      }
     }
   }
 
@@ -135,7 +148,7 @@ export class ImageCropper {
           <polygon
             points={this.getPointsDataFromSelection(selection)}
             class="inactive-selection dashed"
-            stroke-width={4 * this.getRatio()}
+            stroke-width={this.inActiveStroke * this.getRatio()}
             fill="transparent"
             onMouseUp={()=>this.onSelectionClicked(index)}
             onTouchEnd={()=>this.onSelectionClicked(index)}
@@ -179,7 +192,7 @@ export class ImageCropper {
             width={this.getHandlerSize()}
             height={this.getHandlerSize()} 
             class="cropper-controls"
-            stroke-width={index === this.selectedHandlerIndex ? 4 * this.getRatio() : 2 * this.getRatio()}
+            stroke-width={index === this.selectedHandlerIndex ? this.activeStroke * 2 * this.getRatio() : this.activeStroke * this.getRatio()}
             fill="transparent"
             onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e,index)}
             onMouseUp={(e:MouseEvent)=>this.onHandlerMouseUp(e)}
@@ -585,7 +598,7 @@ export class ImageCropper {
 
   render() {
     return (
-      <Host>
+      <Host ref={(el) => this.root = el}>
         <div class="container absolute">
           <canvas 
             ref={(el) => this.canvasElement = el as HTMLCanvasElement}
@@ -608,7 +621,7 @@ export class ImageCropper {
             <polygon
               points={this.getPointsData()}
               class="cropper-controls dashed"
-              stroke-width={2 * this.getRatio()}
+              stroke-width={this.activeStroke * this.getRatio()}
               fill="transparent"
               onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
               onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}

@@ -1,6 +1,8 @@
 :host {
   --active-color: green;
   --inactive-color: gray;
+  --active-stroke: 2;
+  --inactive-stroke: 4;
   display: block;
   position: relative;
   top: 0;
