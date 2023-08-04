@@ -135,7 +135,7 @@ export class ImageCropper {
         {this.inactiveSelections.map((selection,index) => (
           <polygon
             points={this.getPointsDataFromSelection(selection)}
-            class="inactive-selection dashed-10"
+            class="inactive-selection dashed"
             stroke-width={4 * this.getRatio()}
             fill="transparent"
             onMouseUp={()=>this.onSelectionClicked(index)}
@@ -608,7 +608,7 @@ export class ImageCropper {
             {this.rendenInactiveSelections()}
             <polygon
               points={this.getPointsData()}
-              class="cropper-controls dashed-10"
+              class="cropper-controls dashed"
               stroke-width={2 * this.getRatio()}
               fill="transparent"
               onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}

@@ -87,6 +87,6 @@
   cursor:pointer;
 }
 
-.dashed-10 {
+.dashed {
   stroke-dasharray:10,10;
 }
