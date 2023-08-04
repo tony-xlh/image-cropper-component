@@ -613,41 +613,43 @@ export class ImageCropper {
   render() {
     return (
       <Host>
-        <canvas 
-          ref={(el) => this.canvasElement = el as HTMLCanvasElement}
-          class="hidden-canvas"
-        ></canvas>
-        <svg 
-          version="1.1" 
-          ref={(el) => this.svgElement = el as SVGElement}
-          class="cropper-svg"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox={this.viewBox}
-          width={this.getSVGWidth()}
-          onMouseUp={()=>this.onSVGMouseUp()}
-          onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
-          onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
-          onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
-        >
-          {this.renderHandlersMaskDefs()}
-          <image href={this.img ? this.img.src : ""}></image>
-          {this.rendenInactiveSelections()}
-          <polygon
-            mask="url(#myMask)"
-            points={this.getPointsData()}
-            class="cropper-controls"
-            stroke-width={2 * this.getRatio()}
-            fill="transparent"
-            onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
-            onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}
-            onTouchStart={(e:TouchEvent)=>this.onPolygonTouchStart(e)}
-            onTouchEnd={(e:TouchEvent)=>this.onPolygonTouchEnd(e)}
+        <div class="container absolute">
+          <canvas 
+            ref={(el) => this.canvasElement = el as HTMLCanvasElement}
+            class="hidden-canvas"
+          ></canvas>
+          <svg 
+            version="1.1" 
+            ref={(el) => this.svgElement = el as SVGElement}
+            class="cropper-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox={this.viewBox}
+            width={this.getSVGWidth()}
+            onMouseUp={()=>this.onSVGMouseUp()}
+            onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
+            onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
+            onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
           >
-          </polygon>
-          {this.renderHandlers()}
-        </svg>
-        {this.renderFooter()}
-        <slot></slot>
+            {this.renderHandlersMaskDefs()}
+            <image href={this.img ? this.img.src : ""}></image>
+            {this.rendenInactiveSelections()}
+            <polygon
+              mask="url(#myMask)"
+              points={this.getPointsData()}
+              class="cropper-controls"
+              stroke-width={2 * this.getRatio()}
+              fill="transparent"
+              onMouseDown={(e:MouseEvent)=>this.onPolygonMouseDown(e)}
+              onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}
+              onTouchStart={(e:TouchEvent)=>this.onPolygonTouchStart(e)}
+              onTouchEnd={(e:TouchEvent)=>this.onPolygonTouchEnd(e)}
+            >
+            </polygon>
+            {this.renderHandlers()}
+          </svg>
+          {this.renderFooter()}
+          <slot></slot>
+        </div>
       </Host>
     );
   }
