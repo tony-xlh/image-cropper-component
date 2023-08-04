@@ -86,7 +86,6 @@ export class ImageCropper {
 
   onCanceled(){
     if (this.canceled){
-      console.log("emit");
       this.canceled.emit();
     }
   }
