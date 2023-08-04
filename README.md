@@ -85,7 +85,10 @@ Events:
 You can customize the style of the selection with the following CSS:
 
 ```css
- --line-color:orange;
+--active-color: orange;
+--inactive-color: orange;
+--active-stroke: 5;
+--inactive-stroke: 4;
 ```
 
 PS: If you need to use Dynamsoft Document Normalizer, please include it in your HTML's head:
