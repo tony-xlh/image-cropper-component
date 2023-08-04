@@ -1,5 +1,6 @@
 :host {
-  --line-color: green;
+  --active-color: green;
+  --inactive-color: gray;
   display: block;
   position: relative;
   top: 0;
@@ -23,7 +24,7 @@
 }
 
 .cropper-controls {
-  stroke:var(--line-color);
+  stroke:var(--active-color);
 }
 
 .footer {
@@ -83,7 +84,7 @@
 }
 
 .cropper-svg .inactive-selection {
-  stroke:var(--line-color);
+  stroke:var(--inactive-color);
   cursor:pointer;
 }
 
