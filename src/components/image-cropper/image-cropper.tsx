@@ -65,6 +65,7 @@ export class ImageCropper {
   @Watch('img')
   watchImgPropHandler(newValue: HTMLImageElement) {
     if (newValue) {
+      this.resetStates();
       this.viewBox = "0 0 "+newValue.naturalWidth+" "+newValue.naturalHeight;
       if (this.root) {
         const inActiveStroke = parseInt(this.root.style.getPropertyValue("--inactive-stroke"));
@@ -510,6 +511,14 @@ export class ImageCropper {
     }else{
       return 1;
     }
+  }
+
+  @Method()
+  async resetStates():Promise<void>
+  {
+    this.scale = 1.0;
+    this.offsetX = 0;
+    this.offsetY = 0;
   }
 
   @Method()

@@ -24,6 +24,7 @@ export namespace Components {
         "license"?: string;
         "quad"?: Quad;
         "rect"?: Rect;
+        "resetStates": () => Promise<void>;
     }
 }
 export interface ImageCropperCustomEvent<T> extends CustomEvent<T> {
