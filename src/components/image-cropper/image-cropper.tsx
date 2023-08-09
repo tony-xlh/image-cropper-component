@@ -21,6 +21,7 @@ export interface CropOptions {
   perspectiveTransform?:boolean;
   colorMode?:"binary"|"gray"|"color";
   selection?:Quad|Rect;
+  source?:Blob|string|HTMLImageElement|HTMLCanvasElement;
 }
 
 @Component({
@@ -508,6 +509,10 @@ export class ImageCropper {
   @Method()
   async getCroppedImage(options:CropOptions):Promise<string>
   {
+    let img:Blob|string|HTMLImageElement|HTMLCanvasElement = this.img;
+    if (options.source) {
+      img = options.source;
+    }
     let isQuad = false;
     if (options.selection) {
       if (!("width" in options.selection)) {
@@ -543,7 +548,7 @@ export class ImageCropper {
       }else{
         quad = await this.getQuad();
       }
-      let normalizedResult = await this.ddn.normalize(this.img,{quad:quad});
+      let normalizedResult = await this.ddn.normalize(img,{quad:quad});
       return normalizedResult.image.toCanvas().toDataURL();
     }else{
       let ctx = this.canvasElement.getContext("2d");
@@ -557,11 +562,48 @@ export class ImageCropper {
       }else{
         rect = await this.getRect();
       }
+      if (typeof(img) === "string") {
+        img = await this.getImageFromDataURL(img);
+      }
+      if (img instanceof Blob) {
+        img = await this.getImageFromBlob(img);
+      }
       this.canvasElement.width = rect.width;
       this.canvasElement.height = rect.height;
-      ctx.drawImage(this.img, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
+      ctx.drawImage(img, rect.x, rect.y, rect.width, rect.height, 0, 0, rect.width, rect.height);
       return this.canvasElement.toDataURL();
     }
+  }
+
+  async getImageFromBlob(source:Blob){
+    return new Promise<HTMLImageElement>((resolve, reject) => {
+      let reader = new FileReader();
+      reader.readAsDataURL(source);
+      reader.onloadend = function () {
+        let dataURL:string = reader.result as string;
+        let img = document.createElement("img");
+        img.onload = function(){
+          resolve(img);
+        };
+        img.onerror = function(){
+          reject();
+        }
+        img.src = dataURL;
+      }
+    })
+  }
+
+  async getImageFromDataURL(source:string){
+    return new Promise<HTMLImageElement>((resolve, reject) => {
+      let img = document.createElement("img");
+      img.onload = function(){
+        resolve(img);
+      };
+      img.onerror = function(){
+        reject();
+      }
+      img.src = source;
+    })
   }
 
   @Method()

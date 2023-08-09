@@ -71,6 +71,10 @@ export interface CropOptions {
   perspectiveTransform?:boolean;
   colorMode?:"binary"|"gray"|"color";
   selection?:Quad|Rect;
+  /*
+   * use an external image source
+   */
+  source?:Blob|string|HTMLImageElement|HTMLCanvasElement;
 }
 ```
 
