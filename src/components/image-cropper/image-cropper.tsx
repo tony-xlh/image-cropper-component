@@ -247,18 +247,33 @@ export class ImageCropper {
 
   onSVGTouchStart(e:TouchEvent) {
     this.usingTouchEvent = true;
-    if (this.selectedHandlerIndex != -1) {
-      let coord = this.getMousePosition(e,this.svgElement);
-      this.originalPoints = JSON.parse(JSON.stringify(this.points));  //We need this info so that whether we start dragging the rectangular in the center or in the corner will not affect the result.
-      this.handlerMouseDownPoint.x = coord.x;
-      this.handlerMouseDownPoint.y = coord.y;
+    let coord = this.getMousePosition(e,this.svgElement);
+    if (e.touches.length === 2) {
+      this.selectedHandlerIndex = -1;
+      this.svgMouseDownPoint = {x:coord.x,y:coord.y};
+    }else{
+      if (this.selectedHandlerIndex != -1) {   
+        this.originalPoints = JSON.parse(JSON.stringify(this.points));  //We need this info so that whether we start dragging the rectangular in the center or in the corner will not affect the result.
+        this.handlerMouseDownPoint.x = coord.x;
+        this.handlerMouseDownPoint.y = coord.y;
+      }
     }
+  }
+
+  onSVGTouchEnd() {
+    this.svgMouseDownPoint = undefined;
   }
 
   onSVGTouchMove(e:TouchEvent) {
     e.stopPropagation();
     e.preventDefault();
-    this.handleMoveEvent(e);
+    if (e.touches.length === 2) {
+      if (this.svgMouseDownPoint) {
+        this.panSVG(e);
+      }
+    }else{
+      this.handleMoveEvent(e);
+    }
   }
 
   onContainerMouseUp(){
@@ -297,15 +312,19 @@ export class ImageCropper {
 
   onSVGMouseMove(e:MouseEvent){
     if (this.svgMouseDownPoint) {
-      let coord = this.getMousePosition(e,this.svgElement);
-      let offsetX = coord.x - this.svgMouseDownPoint.x;
-      let offsetY = coord.y - this.svgMouseDownPoint.y;
-      //e.g img width: 100, offsetX: -10, translateX: -10%
-      this.offsetX = this.offsetX + offsetX;
-      this.offsetY = this.offsetY + offsetY;
+      this.panSVG(e);
     }else{
       this.handleMoveEvent(e);
     }
+  }
+
+  panSVG(e:TouchEvent|MouseEvent){
+    let coord = this.getMousePosition(e,this.svgElement);
+    let offsetX = coord.x - this.svgMouseDownPoint.x;
+    let offsetY = coord.y - this.svgMouseDownPoint.y;
+    //e.g img width: 100, offsetX: -10, translateX: -10%
+    this.offsetX = this.offsetX + offsetX;
+    this.offsetY = this.offsetY + offsetY;
   }
 
   handleMoveEvent(e:MouseEvent|TouchEvent){
@@ -701,6 +720,7 @@ export class ImageCropper {
             onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
             onMouseDown={(e:MouseEvent)=>this.onSVGMouseDown(e)}
             onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
+            onTouchEnd={()=>this.onSVGTouchEnd()}
             onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
           >
             <image href={this.img ? this.img.src : ""}></image>
