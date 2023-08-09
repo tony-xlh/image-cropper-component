@@ -249,6 +249,7 @@ export class ImageCropper {
   onSVGTouchStart(e:TouchEvent) {
     this.usingTouchEvent = true;
     this.svgMouseDownPoint = undefined;
+    this.previousDistance = undefined;
     let coord = this.getMousePosition(e,this.svgElement);
     if (e.touches.length > 1) {
       this.selectedHandlerIndex = -1;
@@ -465,15 +466,11 @@ export class ImageCropper {
     this.usingTouchEvent = true; //Touch events are triggered before mouse events. We can use this to prevent executing mouse events.
     e.stopPropagation();
     this.polygonMouseDown = false;
-    if (this.selectedHandlerIndex === index) {
-      this.selectedHandlerIndex = -1;
-    }else{
-      let coord = this.getMousePosition(e,this.svgElement);
-      this.originalPoints = JSON.parse(JSON.stringify(this.points));
-      this.handlerMouseDownPoint.x = coord.x;
-      this.handlerMouseDownPoint.y = coord.y;
-      this.selectedHandlerIndex = index;
-    }
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.originalPoints = JSON.parse(JSON.stringify(this.points));
+    this.handlerMouseDownPoint.x = coord.x;
+    this.handlerMouseDownPoint.y = coord.y;
+    this.selectedHandlerIndex = index;
   }
 
   getPointIndexFromHandlerIndex(index:number){
