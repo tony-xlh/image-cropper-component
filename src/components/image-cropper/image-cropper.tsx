@@ -53,6 +53,9 @@ export class ImageCropper {
   @State() inActiveStroke:number = 4;
   @State() selectedHandlerIndex:number = -1;
   @State() points:[Point,Point,Point,Point] = undefined;
+  @State() offsetX = 0;
+  @State() offsetY = 0;
+  @State() scale = 1.0;
   @Event() confirmed?: EventEmitter<void>;
   @Event() canceled?: EventEmitter<void>;
   @Event() selectionClicked?: EventEmitter<number>;
@@ -261,6 +264,20 @@ export class ImageCropper {
       this.selectedHandlerIndex = -1;
       this.polygonMouseDown = false;
     }
+  }
+
+  onContainerWheel(e:WheelEvent) {
+    console.log(e);
+    if (e.deltaY<0) {
+      this.scale = this.scale + 0.1;
+    }else{
+      this.scale = Math.max(0.1, this.scale - 0.1);
+    }
+    e.preventDefault();
+  }
+
+  getPanAndZoomStyle(){
+    return "scale("+this.scale+")";
   }
 
   onSVGMouseMove(e:MouseEvent){
@@ -641,7 +658,9 @@ export class ImageCropper {
   render() {
     return (
       <Host ref={(el) => this.root = el}>
-        <div class="container absolute">
+        <div class="container absolute"
+          onWheel={(e:WheelEvent)=>this.onContainerWheel(e)}
+        >
           <canvas 
             ref={(el) => this.canvasElement = el as HTMLCanvasElement}
             class="hidden-canvas"
@@ -653,6 +672,7 @@ export class ImageCropper {
             xmlns="http://www.w3.org/2000/svg"
             viewBox={this.viewBox}
             width={this.getSVGWidth()}
+            style={{transform:this.getPanAndZoomStyle()}}
             onMouseUp={()=>this.onSVGMouseUp()}
             onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
             onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
