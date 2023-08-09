@@ -100,6 +100,11 @@ PS: If you need to use Dynamsoft Document Normalizer, please include it in your 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/dynamsoft-document-normalizer@1.0.12/dist/ddn.js"></script>
 ```
+## Pan and Zoom
+
+You can use the wheel to zoom the image and pan the image with the mouse.
+
+Pinch and zoom are also supported on touch devices.
 
 ## Install this component
 
