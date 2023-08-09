@@ -89,6 +89,16 @@ Type: `Promise<Rect>`
 
 
 
+### `resetStates() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 
 ----------------------------------------------
 

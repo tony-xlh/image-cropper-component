@@ -133,3 +133,6 @@ PS: If you need to use Dynamsoft Document Normalizer, please include it in your 
    
 - Then you can use the element anywhere in your template, JSX, html etc
 
+## Credits
+
+[Adding zoom and pan effects to SVG](https://onestepcode.com/zoom-pan-effect-svg/)
