@@ -33,6 +33,7 @@ export class ImageCropper {
   handlers:number[] = [0,1,2,3,4,5,6,7];
   polygonMouseDown:boolean = false;
   polygonMouseDownPoint:Point = {x:0,y:0};
+  previousDistance:number|undefined = undefined;
   svgMouseDownPoint:Point|undefined = undefined;
   handlerMouseDownPoint:Point = {x:0,y:0};
   root:HTMLElement;
@@ -269,11 +270,33 @@ export class ImageCropper {
   onSVGTouchMove(e:TouchEvent) {
     e.stopPropagation();
     e.preventDefault();
-    if (this.svgMouseDownPoint) {
-      this.panSVG(e);
+    if (e.touches.length === 2) {
+      //handle pinch and zoom
+      const distance = this.getDistanceBetweenTwoTouches(e.touches[0],e.touches[1]);
+      if (this.previousDistance) {
+        if ((distance - this.previousDistance)>0) { //zoom
+          this.scale = Math.min(10, this.scale + 0.02);
+        }else{
+          this.scale = Math.max(0.1,this.scale - 0.02);
+        }
+        this.previousDistance = distance;
+      }else{
+        this.previousDistance = distance;
+      }
     }else{
-      this.handleMoveEvent(e);
+      if (this.svgMouseDownPoint) {
+        this.panSVG(e);
+      }else{
+        this.handleMoveEvent(e);
+      }
     }
+  }
+
+  getDistanceBetweenTwoTouches(touch1:Touch,touch2:Touch){
+    const offsetX = touch1.clientX - touch2.clientX;
+    const offsetY = touch1.clientY - touch2.clientY;
+    const distance = offsetX * offsetX + offsetY + offsetY;
+    return distance;
   }
 
   onContainerMouseUp(){
