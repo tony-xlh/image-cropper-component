@@ -246,6 +246,7 @@ export class ImageCropper {
   }
 
   onSVGTouchStart(e:TouchEvent) {
+    this.usingTouchEvent = true;
     if (this.selectedHandlerIndex != -1) {
       let coord = this.getMousePosition(e,this.svgElement);
       this.originalPoints = JSON.parse(JSON.stringify(this.points));  //We need this info so that whether we start dragging the rectangular in the center or in the corner will not affect the result.
@@ -269,8 +270,10 @@ export class ImageCropper {
   }
 
   onSVGMouseDown(e:MouseEvent) {
-    let coord = this.getMousePosition(e,this.svgElement);
-    this.svgMouseDownPoint = {x:coord.x,y:coord.y};
+    if (!this.usingTouchEvent) {
+      let coord = this.getMousePosition(e,this.svgElement);
+      this.svgMouseDownPoint = {x:coord.x,y:coord.y};
+    }
   }
 
   onContainerWheel(e:WheelEvent) {
