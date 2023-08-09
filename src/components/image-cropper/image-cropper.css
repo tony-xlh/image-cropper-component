@@ -15,7 +15,6 @@
   display: flex;
   justify-content: center;
   background: black;
-  cursor:grab;
   overflow: hidden;
 }
 
@@ -73,6 +72,10 @@
   height: 2.5em;
   pointer-events: all;
   cursor:pointer;
+}
+
+.cropper-svg {
+  cursor:grab;
 }
 
 .cropper-svg polygon {

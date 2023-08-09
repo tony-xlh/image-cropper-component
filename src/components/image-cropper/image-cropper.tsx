@@ -33,6 +33,7 @@ export class ImageCropper {
   handlers:number[] = [0,1,2,3,4,5,6,7];
   polygonMouseDown:boolean = false;
   polygonMouseDownPoint:Point = {x:0,y:0};
+  svgMouseDownPoint:Point|undefined = undefined;
   handlerMouseDownPoint:Point = {x:0,y:0};
   root:HTMLElement;
   svgElement:SVGElement;
@@ -259,15 +260,20 @@ export class ImageCropper {
     this.handleMoveEvent(e);
   }
 
-  onSVGMouseUp(){
+  onContainerMouseUp(){
+    this.svgMouseDownPoint = undefined;
     if (!this.usingTouchEvent) {
       this.selectedHandlerIndex = -1;
       this.polygonMouseDown = false;
     }
   }
 
+  onSVGMouseDown(e:MouseEvent) {
+    let coord = this.getMousePosition(e,this.svgElement);
+    this.svgMouseDownPoint = {x:coord.x,y:coord.y};
+  }
+
   onContainerWheel(e:WheelEvent) {
-    console.log(e);
     if (e.deltaY<0) {
       this.scale = this.scale + 0.1;
     }else{
@@ -277,11 +283,26 @@ export class ImageCropper {
   }
 
   getPanAndZoomStyle(){
-    return "scale("+this.scale+")";
+    if (this.img) {
+      const percentX = this.offsetX / this.img.naturalWidth * 100; 
+      const percentY = this.offsetY / this.img.naturalHeight * 100;
+      return "scale("+this.scale+") translateX("+percentX+"%)translateY("+percentY+"%)";
+    }else{
+      return "scale(1.0)";
+    }
   }
 
   onSVGMouseMove(e:MouseEvent){
-    this.handleMoveEvent(e);
+    if (this.svgMouseDownPoint) {
+      let coord = this.getMousePosition(e,this.svgElement);
+      let offsetX = coord.x - this.svgMouseDownPoint.x;
+      let offsetY = coord.y - this.svgMouseDownPoint.y;
+      //e.g img width: 100, offsetX: -10, translateX: -10%
+      this.offsetX = this.offsetX + offsetX;
+      this.offsetY = this.offsetY + offsetY;
+    }else{
+      this.handleMoveEvent(e);
+    }
   }
 
   handleMoveEvent(e:MouseEvent|TouchEvent){
@@ -660,6 +681,7 @@ export class ImageCropper {
       <Host ref={(el) => this.root = el}>
         <div class="container absolute"
           onWheel={(e:WheelEvent)=>this.onContainerWheel(e)}
+          onMouseUp={()=>this.onContainerMouseUp()}
         >
           <canvas 
             ref={(el) => this.canvasElement = el as HTMLCanvasElement}
@@ -673,8 +695,8 @@ export class ImageCropper {
             viewBox={this.viewBox}
             width={this.getSVGWidth()}
             style={{transform:this.getPanAndZoomStyle()}}
-            onMouseUp={()=>this.onSVGMouseUp()}
             onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
+            onMouseDown={(e:MouseEvent)=>this.onSVGMouseDown(e)}
             onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
             onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
           >
