@@ -327,20 +327,8 @@ export class ImageCropper {
 
   getPanAndZoomStyle(){
     if (this.img) {
-      let percentX = this.offsetX / this.img.naturalWidth * 100; 
-      let percentY = this.offsetY / this.img.naturalHeight * 100;
-      if (percentY<-50) {
-        percentY = -50;
-      }
-      if (percentY>50) {
-        percentY = 50;
-      }
-      if (percentX<-50) {
-        percentX = -50;
-      }
-      if (percentX>50) {
-        percentX = 50;
-      }
+      const percentX = this.offsetX / this.img.naturalWidth * 100; 
+      const percentY = this.offsetY / this.img.naturalHeight * 100;
       return "scale("+this.scale+") translateX("+percentX+"%)translateY("+percentY+"%)";
     }else{
       return "scale(1.0)";
