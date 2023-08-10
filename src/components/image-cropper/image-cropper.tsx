@@ -327,8 +327,20 @@ export class ImageCropper {
 
   getPanAndZoomStyle(){
     if (this.img) {
-      const percentX = this.offsetX / this.img.naturalWidth * 100; 
-      const percentY = this.offsetY / this.img.naturalHeight * 100;
+      let percentX = this.offsetX / this.img.naturalWidth * 100; 
+      let percentY = this.offsetY / this.img.naturalHeight * 100;
+      if (percentY<-50) {
+        percentY = -50;
+      }
+      if (percentY>50) {
+        percentY = 50;
+      }
+      if (percentX<-50) {
+        percentX = -50;
+      }
+      if (percentX>50) {
+        percentX = 50;
+      }
       return "scale("+this.scale+") translateX("+percentX+"%)translateY("+percentY+"%)";
     }else{
       return "scale(1.0)";
@@ -347,6 +359,8 @@ export class ImageCropper {
     let coord = this.getMousePosition(e,this.svgElement);
     let offsetX = coord.x - this.svgMouseDownPoint.x;
     let offsetY = coord.y - this.svgMouseDownPoint.y;
+    //console.log(coord);
+    //console.log(this.svgMouseDownPoint);
     //e.g img width: 100, offsetX: -10, translateX: -10%
     this.offsetX = this.offsetX + offsetX;
     this.offsetY = this.offsetY + offsetY;
