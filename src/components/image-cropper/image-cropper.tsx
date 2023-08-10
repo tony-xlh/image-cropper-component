@@ -273,24 +273,28 @@ export class ImageCropper {
     e.stopPropagation();
     e.preventDefault();
     if (e.touches.length === 2) {
-      //handle pinch and zoom
-      const distance = this.getDistanceBetweenTwoTouches(e.touches[0],e.touches[1]);
-      if (this.previousDistance) {
-        if ((distance - this.previousDistance)>0) { //zoom
-          this.scale = Math.min(10, this.scale + 0.02);
-        }else{
-          this.scale = Math.max(0.1,this.scale - 0.02);
-        }
-        this.previousDistance = distance;
-      }else{
-        this.previousDistance = distance;
-      }
+      this.pinchAndZoom(e);
     }else{
       if (this.svgMouseDownPoint) {
         this.panSVG(e);
       }else{
         this.handleMoveEvent(e);
       }
+    }
+  }
+
+  //handle pinch and zoom
+  pinchAndZoom(e:TouchEvent){
+    const distance = this.getDistanceBetweenTwoTouches(e.touches[0],e.touches[1]);
+    if (this.previousDistance) {
+      if ((distance - this.previousDistance)>0) { //zoom
+        this.scale = Math.min(10, this.scale + 0.02);
+      }else{
+        this.scale = Math.max(0.1,this.scale - 0.02);
+      }
+      this.previousDistance = distance;
+    }else{
+      this.previousDistance = distance;
     }
   }
 
@@ -321,6 +325,13 @@ export class ImageCropper {
       this.scale = this.scale + 0.1;
     }else{
       this.scale = Math.max(0.1, this.scale - 0.1);
+    }
+    e.preventDefault();
+  }
+
+  onContainerTouchMove(e:TouchEvent) {
+    if (e.touches.length === 2) {
+      this.pinchAndZoom(e);
     }
     e.preventDefault();
   }
@@ -749,6 +760,7 @@ export class ImageCropper {
         <div class="container absolute"
           onWheel={(e:WheelEvent)=>this.onContainerWheel(e)}
           onMouseUp={()=>this.onContainerMouseUp()}
+          onTouchMove={(e:TouchEvent)=>this.onContainerTouchMove(e)}
         >
           <canvas 
             ref={(el) => this.canvasElement = el as HTMLCanvasElement}
