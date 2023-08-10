@@ -75,6 +75,7 @@
 }
 
 .cropper-svg {
+  align-self: center;
   cursor:grab;
 }
 
