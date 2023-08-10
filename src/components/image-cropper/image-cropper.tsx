@@ -359,8 +359,13 @@ export class ImageCropper {
     let coord = this.getMousePosition(e,this.svgElement);
     let offsetX = coord.x - this.svgMouseDownPoint.x;
     let offsetY = coord.y - this.svgMouseDownPoint.y;
-    //console.log(coord);
-    //console.log(this.svgMouseDownPoint);
+    console.log("coord");
+    console.log(coord);
+    console.log("svgMouseDownPoint");
+    console.log(this.svgMouseDownPoint);
+
+    console.log(offsetX)
+    console.log(offsetY)
     //e.g img width: 100, offsetX: -10, translateX: -10%
     this.offsetX = this.offsetX + offsetX;
     this.offsetY = this.offsetY + offsetY;
@@ -738,8 +743,13 @@ export class ImageCropper {
 
   getSVGWidth(){
     if (this.img && this.svgElement) {
+      this.svgElement.style.height = "100%";
       let imgRatio = this.img.naturalWidth/this.img.naturalHeight;
       let width = this.svgElement.clientHeight * imgRatio;
+      if (width>this.svgElement.parentElement.clientWidth) {
+        width = this.svgElement.parentElement.clientWidth;
+        this.svgElement.style.height = width / imgRatio + "px";
+      }
       return width;
     }
     return "100%";
