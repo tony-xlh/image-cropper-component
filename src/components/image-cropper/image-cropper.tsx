@@ -1,7 +1,4 @@
 import { Component, Event, EventEmitter, Fragment, Host, Method, Prop, State, Watch, h } from '@stencil/core';
-import { DetectedQuadResultItem, NormalizedImageResultItem } from 'dynamsoft-document-normalizer';
-import { CaptureVisionRouter } from 'dynamsoft-capture-vision-router';
-import { CapturedResult } from 'dynamsoft-core';
 
 export interface Quad{
   points:[Point,Point,Point,Point];
@@ -42,7 +39,7 @@ export class ImageCropper {
   svgElement:SVGElement;
   canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
-  cvr:CaptureVisionRouter|undefined;
+  cvr:any|undefined;
   usingTouchEvent:boolean = false;
   usingQuad = false;
   @Prop() img?: HTMLImageElement;
@@ -664,8 +661,8 @@ export class ImageCropper {
       settings.roi  = quad;
       settings.roiMeasuredInPercentage = false;
       await this.cvr.updateSettings(templateName, settings);
-      let normalizedImagesResult:CapturedResult = await this.cvr.capture(img,templateName);
-      let normalizedImageResultItem:NormalizedImageResultItem = (normalizedImagesResult.items[0] as NormalizedImageResultItem);
+      let normalizedImagesResult:any = await this.cvr.capture(img,templateName);
+      let normalizedImageResultItem:any = (normalizedImagesResult.items[0] as any);
       let dataURL = normalizedImageResultItem.toCanvas().toDataURL();
       return dataURL;
     }else{
@@ -725,16 +722,16 @@ export class ImageCropper {
   }
 
   @Method()
-  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResultItem[]>
+  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<any[]>
   {
     if (window["Dynamsoft"]) {
       if (!this.cvr) {
         await this.initCVR();
       }
-      let result:CapturedResult = await this.cvr.capture(source,"DetectDocumentBoundaries_Default");
-      let results:DetectedQuadResultItem[] = [];
+      let result:any = await this.cvr.capture(source,"DetectDocumentBoundaries_Default");
+      let results:any[] = [];
       for (let index = 0; index < result.items.length; index++) {
-        const item = (result.items[index] as DetectedQuadResultItem);
+        const item = (result.items[index] as any);
         results.push(item);
       }
       return results;
@@ -745,7 +742,7 @@ export class ImageCropper {
 
   async initCVR(){
     window["Dynamsoft"]["License"]["LicenseManager"].initLicense(this.license);
-    window["Dynamsoft"]["CVR"]["CaptureVisionRouter"].preloadModule(["DDN"]);
+    window["Dynamsoft"]["Core"].loadWasm(["CVR","DIP"]);
     this.cvr = await window["Dynamsoft"]["CVR"]["CaptureVisionRouter"].createInstance();
     this.cvr.initSettings("{\"CaptureVisionTemplates\": [{\"Name\": \"Default\"},{\"Name\": \"DetectDocumentBoundaries_Default\",\"ImageROIProcessingNameArray\": [\"roi-detect-document-boundaries\"]},{\"Name\": \"DetectAndNormalizeDocument_Default\",\"ImageROIProcessingNameArray\": [\"roi-detect-and-normalize-document\"]},{\"Name\": \"NormalizeDocument_Binary\",\"ImageROIProcessingNameArray\": [\"roi-normalize-document-binary\"]},  {\"Name\": \"NormalizeDocument_Gray\",\"ImageROIProcessingNameArray\": [\"roi-normalize-document-gray\"]},  {\"Name\": \"NormalizeDocument_Color\",\"ImageROIProcessingNameArray\": [\"roi-normalize-document-color\"]}],\"TargetROIDefOptions\": [{\"Name\": \"roi-detect-document-boundaries\",\"TaskSettingNameArray\": [\"task-detect-document-boundaries\"]},{\"Name\": \"roi-detect-and-normalize-document\",\"TaskSettingNameArray\": [\"task-detect-and-normalize-document\"]},{\"Name\": \"roi-normalize-document-binary\",\"TaskSettingNameArray\": [\"task-normalize-document-binary\"]},  {\"Name\": \"roi-normalize-document-gray\",\"TaskSettingNameArray\": [\"task-normalize-document-gray\"]},  {\"Name\": \"roi-normalize-document-color\",\"TaskSettingNameArray\": [\"task-normalize-document-color\"]}],\"DocumentNormalizerTaskSettingOptions\": [{\"Name\": \"task-detect-and-normalize-document\",\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-detect-and-normalize\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-detect-and-normalize\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-detect-and-normalize\"}]},{\"Name\": \"task-detect-document-boundaries\",\"TerminateSetting\": {\"Section\": \"ST_DOCUMENT_DETECTION\"},\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-detect\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-detect\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-detect\"}]},{\"Name\": \"task-normalize-document-binary\",\"StartSection\": \"ST_DOCUMENT_NORMALIZATION\",   \"ColourMode\": \"ICM_BINARY\",\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-normalize\"}]},  {\"Name\": \"task-normalize-document-gray\",   \"ColourMode\": \"ICM_GRAYSCALE\",\"StartSection\": \"ST_DOCUMENT_NORMALIZATION\",\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-normalize\"}]},  {\"Name\": \"task-normalize-document-color\",   \"ColourMode\": \"ICM_COLOUR\",\"StartSection\": \"ST_DOCUMENT_NORMALIZATION\",\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-normalize\"}]}],\"ImageParameterOptions\": [{\"Name\": \"ip-detect-and-normalize\",\"BinarizationModes\": [{\"Mode\": \"BM_LOCAL_BLOCK\",\"BlockSizeX\": 0,\"BlockSizeY\": 0,\"EnableFillBinaryVacancy\": 0}],\"TextDetectionMode\": {\"Mode\": \"TTDM_WORD\",\"Direction\": \"HORIZONTAL\",\"Sensitivity\": 7}},{\"Name\": \"ip-detect\",\"BinarizationModes\": [{\"Mode\": \"BM_LOCAL_BLOCK\",\"BlockSizeX\": 0,\"BlockSizeY\": 0,\"EnableFillBinaryVacancy\": 0,\"ThresholdCompensation\" : 7}],\"TextDetectionMode\": {\"Mode\": \"TTDM_WORD\",\"Direction\": \"HORIZONTAL\",\"Sensitivity\": 7},\"ScaleDownThreshold\" : 512},{\"Name\": \"ip-normalize\",\"BinarizationModes\": [{\"Mode\": \"BM_LOCAL_BLOCK\",\"BlockSizeX\": 0,\"BlockSizeY\": 0,\"EnableFillBinaryVacancy\": 0}],\"TextDetectionMode\": {\"Mode\": \"TTDM_WORD\",\"Direction\": \"HORIZONTAL\",\"Sensitivity\": 7}}]}");
     this.cvr.maxCvsSideLength = 99999;

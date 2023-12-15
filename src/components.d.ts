@@ -6,14 +6,10 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { CropOptions, Point, Quad, Rect } from "./components/image-cropper/image-cropper";
-import { CapturedResult } from "dynamsoft-core";
-import { DetectedQuadResultItem, NormalizedImageResultItem } from "dynamsoft-document-normalizer";
 export { CropOptions, Point, Quad, Rect } from "./components/image-cropper/image-cropper";
-export { CapturedResult } from "dynamsoft-core";
-export { DetectedQuadResultItem, NormalizedImageResultItem } from "dynamsoft-document-normalizer";
 export namespace Components {
     interface ImageCropper {
-        "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResultItem[]>;
+        "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<any[]>;
         "getAllSelections": (convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>;
         "getCroppedImage": (options: CropOptions) => Promise<string>;
         "getPoints": () => Promise<[Point, Point, Point, Point]>;
