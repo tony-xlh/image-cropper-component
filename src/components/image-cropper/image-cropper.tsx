@@ -636,7 +636,7 @@ export class ImageCropper {
         isQuad = true;
       }
     }
-    if (options.perspectiveTransform && window["Dynamsoft"]["CVR"] && isQuad) {
+    if (options.perspectiveTransform && window["Dynamsoft"] && isQuad) {
       if (!this.cvr) {
         await this.initCVR();
       }
@@ -727,7 +727,7 @@ export class ImageCropper {
   @Method()
   async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResultItem[]>
   {
-    if (window["Dynamsoft"]["CVR"]["CaptureVisionRouter"]) {
+    if (window["Dynamsoft"]) {
       if (!this.cvr) {
         await this.initCVR();
       }
