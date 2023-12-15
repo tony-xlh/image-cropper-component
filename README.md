@@ -29,7 +29,7 @@ cropper.rect = {x:50,y:50,width:200,height:200}; // or quadrilateral: cropper.qu
 It has several methods related to detecting document borders, getting the coordinates, and getting the cropped image.
 
 ```ts
-"detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement, template?:string) => Promise<DetectedQuadResult[]>;
+"detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResultItem[]>;
 "getAllSelections": (convertTo?:"rect"|"quad") => Promise<(Quad|Rect)[]>;
 "getCroppedImage": (options:CropOptions) => Promise<string>;
 "getPoints": () => Promise<[Point, Point, Point, Point]>;
@@ -98,8 +98,13 @@ You can customize the style of the selection with the following CSS:
 PS: If you need to use Dynamsoft Document Normalizer, please include it in your HTML's head:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dynamsoft-document-normalizer@1.0.12/dist/ddn.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-core@3.0.10/dist/core.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-document-normalizer@2.0.11/dist/ddn.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dynamsoft-capture-vision-router@2.0.11/dist/cvr.js"></script>
 ```
+
+
+
 ## Pan and Zoom
 
 You can use the wheel to zoom the image and pan the image with the mouse.

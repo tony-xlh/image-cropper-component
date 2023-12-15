@@ -29,13 +29,13 @@
 
 ## Methods
 
-### `detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement, template?: string) => Promise<DetectedQuadResult[]>`
+### `detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResultItem[]>`
 
 
 
 #### Returns
 
-Type: `Promise<DetectedQuadResult[]>`
+Type: `Promise<DetectedQuadResultItem[]>`
 
 
 
