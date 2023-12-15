@@ -36,6 +36,20 @@
           Detect with <a href="https://www.dynamsoft.com/document-normalizer/docs/">Dynamsoft Document Normalizer</a>:
           <input type="checkbox" id="enableDDN" checked/>
         </label>
+        <label>
+          Color mode (only with Dynamsoft Document Normalizer enabled):
+          <select id="colorMode">
+            <option value="binary">
+              Black & White
+            </option>
+            <option value="gray">
+              Gray
+            </option>
+            <option value="color">
+              Color
+            </option>
+          </select>
+        </label>
         <span id="status"></span>
       </div>
     </div>
@@ -88,9 +102,10 @@
         const selections = await cropper.getAllSelections();
         let container = document.getElementsByClassName("croppedImageContainer")[0];
         container.innerHTML = "";
+        let colorMode = document.getElementById("colorMode").selectedOptions[0].value;
         for (let index = 0; index < selections.length; index++) {
           const selection = selections[index];
-          let croppedImage = await cropper.getCroppedImage({selection:selection,perspectiveTransform:true,colorMode:"binary"});
+          let croppedImage = await cropper.getCroppedImage({selection:selection,perspectiveTransform:true,colorMode:colorMode});
           let image = document.createElement("img");
           image.src = croppedImage;
           container.appendChild(image);
