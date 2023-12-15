@@ -32,12 +32,13 @@
       <input type="file" id="file" onchange="loadImageFromFile();" accept=".jpg,.jpeg,.png,.bmp" />
       <div>
         <button onclick="openCropper()">Open Cropper</button>
+        <br/>
         <label>
           Detect with <a href="https://www.dynamsoft.com/document-normalizer/docs/">Dynamsoft Document Normalizer</a>:
-          <input type="checkbox" id="enableDDN" checked/>
+          <input type="checkbox" id="enableDDN" checked onchange="DDNCheckboxUpdated()"/>
         </label>
-        <label>
-          Color mode (only with Dynamsoft Document Normalizer enabled):
+        <label id="colorModeLabel">
+          Color mode:
           <select id="colorMode">
             <option value="binary">
               Black & White
@@ -173,6 +174,14 @@
         //console.log(cropper);
       }
       document.getElementById("cropper").style.display = "";
+    }
+
+    function DDNCheckboxUpdated(){
+      if (document.getElementById("enableDDN").checked) {
+        document.getElementById("colorModeLabel").style.display = "";
+      }else{
+        document.getElementById("colorModeLabel").style.display = "none";
+      }
     }
   </script>
 </html>
