@@ -1,5 +1,7 @@
 import { Component, Event, EventEmitter, Fragment, Host, Method, Prop, State, Watch, h } from '@stencil/core';
-import { DetectedQuadResult, DocumentNormalizer } from 'dynamsoft-document-normalizer';
+import { DetectedQuadResultItem, NormalizedImageResultItem } from 'dynamsoft-document-normalizer';
+import { CaptureVisionRouter } from 'dynamsoft-capture-vision-router';
+import { CapturedResult } from 'dynamsoft-core';
 
 export interface Quad{
   points:[Point,Point,Point,Point];
@@ -40,7 +42,7 @@ export class ImageCropper {
   svgElement:SVGElement;
   canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
-  ddn:DocumentNormalizer|undefined;
+  cvr:CaptureVisionRouter|undefined;
   usingTouchEvent:boolean = false;
   usingQuad = false;
   @Prop() img?: HTMLImageElement;
@@ -634,20 +636,22 @@ export class ImageCropper {
         isQuad = true;
       }
     }
-    if (options.perspectiveTransform && window["Dynamsoft"]["DDN"] && isQuad) {
-      if (!this.ddn) {
-        await this.initDDN();
+    if (options.perspectiveTransform && window["Dynamsoft"]["CVR"] && isQuad) {
+      if (!this.cvr) {
+        await this.initCVR();
       }
+      let templateName = "normalize-document";
       if (options.colorMode) {
-        let template;
+        let template:string;
         if (options.colorMode === "binary") {
-          template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_BINARY\"}]}";
+          template = "{\"CaptureVisionTemplates\": [{\"Name\": \"NormalizeDocument\",\"ImageROIProcessingNameArray\": [\"roi-normalize-document\"]}],\"TargetROIDefOptions\": [{\"Name\": \"roi-normalize-document\",\"TaskSettingNameArray\": [\"task-normalize-document\"]}],\"DocumentNormalizerTaskSettingOptions\": [{\"Name\": \"task-normalize-document\",\"ColourMode\": \"ICM_BINARY\",\"StartSection\": \"ST_DOCUMENT_NORMALIZATION\",\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-normalize\"}]}],\"ImageParameterOptions\": [{\"Name\": \"ip-normalize\",\"BinarizationModes\": [{\"Mode\": \"BM_LOCAL_BLOCK\",\"BlockSizeX\": 0,\"BlockSizeY\": 0,\"EnableFillBinaryVacancy\": 0}],\"TextDetectionMode\": {\"Mode\": \"TTDM_WORD\",\"Direction\": \"HORIZONTAL\",\"Sensitivity\": 7}}]}";
         } else if (options.colorMode === "gray") {
-          template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_GRAYSCALE\"}]}";
+          template = "{\"CaptureVisionTemplates\": [{\"Name\": \"NormalizeDocument\",\"ImageROIProcessingNameArray\": [\"roi-normalize-document\"]}],\"TargetROIDefOptions\": [{\"Name\": \"roi-normalize-document\",\"TaskSettingNameArray\": [\"task-normalize-document\"]}],\"DocumentNormalizerTaskSettingOptions\": [{\"Name\": \"task-normalize-document\",\"ColourMode\": \"ICM_GRAYSCALE\",\"StartSection\": \"ST_DOCUMENT_NORMALIZATION\",\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-normalize\"}]}],\"ImageParameterOptions\": [{\"Name\": \"ip-normalize\",\"BinarizationModes\": [{\"Mode\": \"BM_LOCAL_BLOCK\",\"BlockSizeX\": 0,\"BlockSizeY\": 0,\"EnableFillBinaryVacancy\": 0}],\"TextDetectionMode\": {\"Mode\": \"TTDM_WORD\",\"Direction\": \"HORIZONTAL\",\"Sensitivity\": 7}}]}";
         } else {
-          template = "{\"GlobalParameter\":{\"Name\":\"GP\",\"MaxTotalImageDimension\":0},\"ImageParameterArray\":[{\"Name\":\"IP-1\",\"NormalizerParameterName\":\"NP-1\",\"BaseImageParameterName\":\"\"}],\"NormalizerParameterArray\":[{\"Name\":\"NP-1\",\"ContentType\":\"CT_DOCUMENT\",\"ColourMode\":\"ICM_COLOUR\"}]}";
+          template = "{\"CaptureVisionTemplates\": [{\"Name\": \"NormalizeDocument\",\"ImageROIProcessingNameArray\": [\"roi-normalize-document\"]}],\"TargetROIDefOptions\": [{\"Name\": \"roi-normalize-document\",\"TaskSettingNameArray\": [\"task-normalize-document\"]}],\"DocumentNormalizerTaskSettingOptions\": [{\"Name\": \"task-normalize-document\",\"ColourMode\": \"ICM_COLOUR\",\"StartSection\": \"ST_DOCUMENT_NORMALIZATION\",\"SectionImageParameterArray\": [{\"Section\": \"ST_REGION_PREDETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_DETECTION\",\"ImageParameterName\": \"ip-normalize\"},{\"Section\": \"ST_DOCUMENT_NORMALIZATION\",\"ImageParameterName\": \"ip-normalize\"}]}],\"ImageParameterOptions\": [{\"Name\": \"ip-normalize\",\"BinarizationModes\": [{\"Mode\": \"BM_LOCAL_BLOCK\",\"BlockSizeX\": 0,\"BlockSizeY\": 0,\"EnableFillBinaryVacancy\": 0}],\"TextDetectionMode\": {\"Mode\": \"TTDM_WORD\",\"Direction\": \"HORIZONTAL\",\"Sensitivity\": 7}}]}";
         }
-        await this.ddn.setRuntimeSettings(template);
+        await this.cvr.initSettings(template);
+        templateName = "NormalizeDocument";
       }
       let quad:Quad;
       if (options.selection) {
@@ -659,8 +663,16 @@ export class ImageCropper {
       }else{
         quad = await this.getQuad();
       }
-      let normalizedResult = await this.ddn.normalize(img,{quad:quad});
-      return normalizedResult.image.toCanvas().toDataURL();
+      console.log(templateName);
+      let settings = await this.cvr.getSimplifiedSettings(templateName);
+      settings.roi  = quad;
+      settings.roiMeasuredInPercentage = false;
+      await this.cvr.updateSettings(templateName, settings);
+      let normalizedImagesResult:CapturedResult = await this.cvr.capture(img,templateName);
+      console.log(normalizedImagesResult);
+      let normalizedImageResultItem:NormalizedImageResultItem = (normalizedImagesResult.items[0] as NormalizedImageResultItem);
+      let dataURL = normalizedImageResultItem.toCanvas().toDataURL();
+      return dataURL;
     }else{
       let ctx = this.canvasElement.getContext("2d");
       let rect:Rect;
@@ -718,26 +730,32 @@ export class ImageCropper {
   }
 
   @Method()
-  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement,template?:string):Promise<DetectedQuadResult[]>
+  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement,template?:string):Promise<DetectedQuadResultItem[]>
   {
-    if (window["Dynamsoft"]["DDN"]["DocumentNormalizer"]) {
-      if (!this.ddn) {
-        await this.initDDN();
+    if (window["Dynamsoft"]["CVR"]["CaptureVisionRouter"]) {
+      if (!this.cvr) {
+        await this.initCVR();
       }
       if (template) {
-        await this.ddn.setRuntimeSettings(template);
+        await this.cvr.initSettings(template);
       }
-      let results:DetectedQuadResult[] = await this.ddn.detectQuad(source);
+      let result:CapturedResult = await this.cvr.capture(source,"detect-document-boundaries");
+      let results:DetectedQuadResultItem[] = [];
+      for (let index = 0; index < result.items.length; index++) {
+        const item = (result.items[index] as DetectedQuadResultItem);
+        results.push(item);
+      }
       return results;
     }else{
       throw "Dynamsoft Document Normalizer not found";
     }
   }
 
-  async initDDN(){
-    window["Dynamsoft"]["DDN"]["DocumentNormalizer"].license = this.license;
-    this.ddn = await window["Dynamsoft"]["DDN"]["DocumentNormalizer"].createInstance();
-    this.ddn.maxCvsSideLength = 99999;
+  async initCVR(){
+    window["Dynamsoft"]["License"]["LicenseManager"].initLicense(this.license);
+    window["Dynamsoft"]["CVR"]["CaptureVisionRouter"].preloadModule(["DDN"]);
+    this.cvr = await window["Dynamsoft"]["CVR"]["CaptureVisionRouter"].createInstance();
+    this.cvr.maxCvsSideLength = 99999;
   }
 
   getSVGWidth(){
