@@ -360,13 +360,13 @@ export class ImageCropper {
     let coord = this.getMousePosition(e,this.svgElement);
     let offsetX = coord.x - this.svgMouseDownPoint.x;
     let offsetY = coord.y - this.svgMouseDownPoint.y;
-    console.log("coord");
-    console.log(coord);
-    console.log("svgMouseDownPoint");
-    console.log(this.svgMouseDownPoint);
+    //console.log("coord");
+    //console.log(coord);
+    //console.log("svgMouseDownPoint");
+    //console.log(this.svgMouseDownPoint);
 
-    console.log(offsetX)
-    console.log(offsetY)
+    //console.log(offsetX)
+    //console.log(offsetY)
     //e.g img width: 100, offsetX: -10, translateX: -10%
     this.offsetX = this.offsetX + offsetX;
     this.offsetY = this.offsetY + offsetY;
@@ -663,13 +663,11 @@ export class ImageCropper {
       }else{
         quad = await this.getQuad();
       }
-      console.log(templateName);
       let settings = await this.cvr.getSimplifiedSettings(templateName);
       settings.roi  = quad;
       settings.roiMeasuredInPercentage = false;
       await this.cvr.updateSettings(templateName, settings);
       let normalizedImagesResult:CapturedResult = await this.cvr.capture(img,templateName);
-      console.log(normalizedImagesResult);
       let normalizedImageResultItem:NormalizedImageResultItem = (normalizedImagesResult.items[0] as NormalizedImageResultItem);
       let dataURL = normalizedImageResultItem.toCanvas().toDataURL();
       return dataURL;
