@@ -730,7 +730,7 @@ export class ImageCropper {
   }
 
   @Method()
-  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement,template?:string):Promise<DetectedQuadResultItem[]>
+  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement,template?:string,templateName?:string):Promise<DetectedQuadResultItem[]>
   {
     if (window["Dynamsoft"]["CVR"]["CaptureVisionRouter"]) {
       if (!this.cvr) {
@@ -739,7 +739,11 @@ export class ImageCropper {
       if (template) {
         await this.cvr.initSettings(template);
       }
-      let result:CapturedResult = await this.cvr.capture(source,"detect-document-boundaries");
+      let detectTemplateName = "detect-document-boundaries";
+      if (templateName) {
+         detectTemplateName = templateName;
+      }
+      let result:CapturedResult = await this.cvr.capture(source,detectTemplateName);
       let results:DetectedQuadResultItem[] = [];
       for (let index = 0; index < result.items.length; index++) {
         const item = (result.items[index] as DetectedQuadResultItem);
