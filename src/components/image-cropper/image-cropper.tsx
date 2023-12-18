@@ -3,6 +3,11 @@ import { DetectedQuadResultItem, NormalizedImageResultItem } from 'dynamsoft-doc
 import { CaptureVisionRouter } from 'dynamsoft-capture-vision-router';
 import { CapturedResult } from 'dynamsoft-core';
 
+export interface DetectedQuadResult{
+  location: Quad;
+  confidenceAsDocumentBoundary: number;
+}
+
 export interface Quad{
   points:[Point,Point,Point,Point];
 }
@@ -725,7 +730,7 @@ export class ImageCropper {
   }
 
   @Method()
-  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResultItem[]>
+  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResult[]>
   {
     if (window["Dynamsoft"]) {
       if (!this.cvr) {
