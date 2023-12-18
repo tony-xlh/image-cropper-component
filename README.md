@@ -29,7 +29,7 @@ cropper.rect = {x:50,y:50,width:200,height:200}; // or quadrilateral: cropper.qu
 It has several methods related to detecting document borders, getting the coordinates, and getting the cropped image.
 
 ```ts
-"detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResultItem[]>;
+"detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
 "getAllSelections": (convertTo?:"rect"|"quad") => Promise<(Quad|Rect)[]>;
 "getCroppedImage": (options:CropOptions) => Promise<string>;
 "getPoints": () => Promise<[Point, Point, Point, Point]>;
@@ -51,6 +51,11 @@ Props:
 Interfaces:
 
 ```ts
+export interface DetectedQuadResult{
+  location: Quad;
+  confidenceAsDocumentBoundary: number;
+}
+
 export interface Quad{
   points:[Point,Point,Point,Point];
 }
