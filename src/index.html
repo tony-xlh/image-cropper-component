@@ -28,6 +28,11 @@
     </style>
   </head>
   <body>
+    <script>
+      Dynamsoft.Core.CoreModule.engineResourcePaths.std = '/build/ddn-res/dynamsoft-core/dist/';
+      Dynamsoft.Core.CoreModule.engineResourcePaths.core = '/build/ddn-res/dynamsoft-core/dist/';
+      Dynamsoft.Core.CoreModule.engineResourcePaths.dip = '/build/ddn-res/dynamsoft-core/dist/';
+    </script>
     <div>
       Load local image:
       <input type="file" id="file" onchange="loadImageFromFile();" accept=".jpg,.jpeg,.png,.bmp" />
