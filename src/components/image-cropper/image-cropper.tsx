@@ -1,5 +1,10 @@
 import { Component, Event, EventEmitter, Fragment, Host, Method, Prop, State, Watch, h } from '@stencil/core';
 
+export interface DetectedQuadResult{
+  location: Quad;
+  confidenceAsDocumentBoundary: number;
+}
+
 export interface Quad{
   points:[Point,Point,Point,Point];
 }
@@ -722,7 +727,7 @@ export class ImageCropper {
   }
 
   @Method()
-  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<any[]>
+  async detect(source: string | HTMLImageElement | Blob | HTMLCanvasElement):Promise<DetectedQuadResult[]>
   {
     if (window["Dynamsoft"]) {
       if (!this.cvr) {
