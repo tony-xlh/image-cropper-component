@@ -6,6 +6,9 @@ export const config: Config = {
     {
       type: 'dist',
       esmLoaderPath: '../loader',
+      copy: [
+        { src: '../ddn-res', warn: true }
+      ]
     },
     {
       type: 'dist-custom-elements',
