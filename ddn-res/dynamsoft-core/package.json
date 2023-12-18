@@ -1,0 +1,89 @@
+{
+  "name": "@dynamsoft/dynamsoft-core",
+  "version": "3.0.20-dev-20231215173356",
+  "description": "Dynamsoft Core encompasses the shared interface and enumeration definitions of the Dynamsoft Capture Vision (DCV) architecture. It is a prerequisite for using the full functionality of DCV.",
+  "homepage": "https://dynamsoft.com/capture-vision/docs/web/programming/javascript/?ver=latest",
+  "main": "dist/core.js",
+  "module": "dist/core.mjs",
+  "exports": {
+    "import": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/core.esm.js"
+    },
+    "require": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/core.js"
+    }
+  },
+  "sideEffects": false,
+  "types": "./dist/types/index.d.ts",
+  "publishConfig": {
+    "registry": "http://npm.scannerproxy.com/",
+    "tag": "latest"
+  },
+  "author": {
+    "name": "Dynamsoft",
+    "url": "https://www.dynamsoft.com"
+  },
+  "maintainers": [
+    {
+      "name": "Dynamsoft",
+      "email": "support@dynamsoft.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dynamsoft/core-javascript.git"
+  },
+  "files": [
+    "/dist/*.js",
+    "/dist/*.mjs",
+    "/dist/*.html",
+    "/dist/*.wasm",
+    "/dist/**/*.d.ts",
+    "/API Reference.url",
+    "/LEGAL.txt"
+  ],
+  "keywords": [
+    "dynamsoft",
+    "core"
+  ],
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c --environment BUILD:production && node ./codeChange.js && node ./compressCore.js",
+    "build-kdev": "rollup -c --environment BUILD:development",
+    "build-dev": "rollup -c --environment BUILD:development && node ./codeChange.js",
+    "update:readme": "updateReadme --package=dynamsoft-core --version=latest",
+    "update:prod": "updatePackage --package=dynamsoft-core --version=auto --env=production --tag=latest",
+    "update:beta": "updatePackage --package=dynamsoft-core --version=auto --env=beta --tag=beta",
+    "update:iv": "updatePackage --package=dynamsoft-core --version=auto --env=internalVersion --tag=iv",
+    "update:dev": "updatePackage --package=dynamsoft-core --version=auto --env=development --tag=latest",
+    "updateLink:npm": "updateLink --source=npm",
+    "updateLink:zip": "updateLink --source=zip",
+    "updateLink:github": "updateLink --source=github",
+    "easyPublish": "npm run update:dev && npm run build-dev && npm publish"
+  },
+  "devDependencies": {
+    "@dynamsoft/dynamsoft-code-parser": "^2.0.0-dev-20231213170024",
+    "@dynamsoft/rd2-scripts": "^0.0.102",
+    "@dynamsoft/tools": "^0.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@scannerproxy/browser-info": "^2.0.8",
+    "@scannerproxy/curscript-path": "^2.0.1",
+    "@scannerproxy/dlsjs": "^3.0.6",
+    "@types/node": "^20.4.2",
+    "detect-browser-node-ssr": "^3.0.2",
+    "eruda": "^3.0.0",
+    "highlight.js": "^9.18.5",
+    "mutable-promise": "^1.1.13",
+    "rollup": "^2.79.1",
+    "showdown": "^1.9.1",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
+  }
+}

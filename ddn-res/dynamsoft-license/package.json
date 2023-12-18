@@ -1,0 +1,83 @@
+{
+  "name": "@dynamsoft/dynamsoft-license",
+  "version": "3.0.0-dev-20231215173453",
+  "description": "The Dynamsoft license module provides common auxiliary classes shared across all Dynamsoft SDKs.",
+  "homepage": "https://dynamsoft.com/capture-vision/docs/web/programming/javascript/?ver=latest",
+  "main": "./dist/license.js",
+  "module": "./dist/license.esm.js",
+  "files": [
+    "/dist/*.js",
+    "/dist/*.mjs",
+    "/dist/*.html",
+    "/dist/**/*.d.ts",
+    "/dist/*.wasm",
+    "/API Reference.url",
+    "/LEGAL.txt"
+  ],
+  "exports": {
+    ".": {
+      "types": {
+        "require": "./dist/types/license.d.cts",
+        "import": "./dist/types/license.d.ts"
+      },
+      "import": "./dist/license.esm.js",
+      "require": "./dist/license.js"
+    }
+  },
+  "types": "./dist/types/license.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup --config",
+    "update:readme": "updateReadme --package=dynamsoft-license --version=latest",
+    "update:prod": "updatePackage --package=dynamsoft-license --version=auto --env=production --tag=latest",
+    "update:beta": "updatePackage --package=dynamsoft-license --version=auto --env=beta --tag=beta",
+    "update:iv": "updatePackage --package=dynamsoft-license --version=auto --env=internalVersion --tag=iv",
+    "update:dev": "updatePackage --package=dynamsoft-license --version=auto --env=development --tag=latest",
+    "updateLink:npm": "updateLink --source=npm",
+    "updateLink:zip": "updateLink --source=zip",
+    "updateLink:github": "updateLink --source=github",
+    "updateCore:prod": "updateImportedPkg --package=dynamsoft-core --dev=false",
+    "updateCore:dev": "updateImportedPkg --package=dynamsoft-core --dev=true",
+    "easyPublish": "npm run update:dev && npm run build && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dynamsoft/license-javascript.git"
+  },
+  "publishConfig": {
+    "registry": "http://npm.scannerproxy.com/",
+    "tag": "latest"
+  },
+  "author": {
+    "name": "Dynamsoft",
+    "url": "https://www.dynamsoft.com"
+  },
+  "keywords": [
+    "dynamsoft",
+    "capture",
+    "vision",
+    "license",
+    "javascript",
+    "sdk"
+  ],
+  "license": "SEE LICENSE IN LICENSE",
+  "devDependencies": {
+    "@dynamsoft/rd2-scripts": "^0.0.78",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@scannerproxy/browser-info": "^2.0.8",
+    "@scannerproxy/curscript-path": "^2.0.1",
+    "@scannerproxy/dlsjs": "^3.0.6",
+    "@types/node": "^20.4.9",
+    "mutable-promise": "^1.1.13",
+    "rollup": "^2.79.1",
+    "showdown": "^1.9.1",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@dynamsoft/dynamsoft-core": "^3.0.20-dev-20231215173356"
+  }
+}
