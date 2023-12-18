@@ -16,6 +16,13 @@ export const config: Config = {
     {
       type: 'www',
       serviceWorker: null, // disable service workers
+      copy: [
+        {
+          src: '../ddn-res',
+          dest: 'build/ddn-res',
+          warn: true,
+        }
+      ]
     },
   ],
 };
