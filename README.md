@@ -8,7 +8,10 @@ An image cropper web component which allows users to crop a rectangle or a 4-poi
 
 [Demo video](https://github.com/tony-xlh/image-cropper-component/assets/5462205/754d7d39-d7a6-4a53-b17c-b1d83e399b5b)
 
-[Online demo](https://candid-tarsier-04033c.netlify.app/)
+Online demos:
+
+* [Load an image to crop](https://candid-tarsier-04033c.netlify.app/)
+* [Document scanner with camera](https://tony-xlh.github.io/ImageCapture-Document-Scanner/scanner.html)
 
 ### Usage
 
