@@ -44,8 +44,10 @@
   "devDependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.11",
-    "dynamsoft-capture-vision-router": "^2.0.11",
-    "dynamsoft-document-normalizer": "^2.0.11",
+    "dynamsoft-capture-vision-router": "^2.0.30",
+    "dynamsoft-core": "^3.0.30",
+    "dynamsoft-document-normalizer": "^2.0.20",
+    "dynamsoft-license": "^3.0.20",
     "i": "^0.3.7",
     "jest": "^27.5.1",
     "jest-cli": "^27.5.1",
