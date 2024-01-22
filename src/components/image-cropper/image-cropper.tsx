@@ -433,7 +433,18 @@ export class ImageCropper {
           newPoints[3].x = this.originalPoints[3].x + offsetX;
         }
       }
+      this.restrainPointsInBounds(newPoints,this.img.naturalWidth,this.img.naturalHeight);
       this.points = newPoints;
+    }
+  }
+
+  restrainPointsInBounds(points:[Point,Point,Point,Point],imgWidth:number,imgHeight:number){
+    for (let index = 0; index < points.length; index++) {
+      const point = points[index];
+      point.x = Math.max(0,point.x);
+      point.x = Math.min(point.x,imgWidth);
+      point.y = Math.max(0,point.y);
+      point.y = Math.min(point.y,imgHeight);
     }
   }
 
