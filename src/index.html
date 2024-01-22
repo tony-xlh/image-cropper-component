@@ -100,19 +100,22 @@
         document.getElementById("cropper").style.display = "none";
       }
       const confirmed = async () => {
-        document.getElementById("cropper").style.display = "none";
-        const selections = await cropper.getAllSelections();
-        let container = document.getElementsByClassName("croppedImageContainer")[0];
-        container.innerHTML = "";
-        let colorMode = document.getElementById("colorMode").selectedOptions[0].value;
-        for (let index = 0; index < selections.length; index++) {
-          const selection = selections[index];
-          let croppedImage = await cropper.getCroppedImage({selection:selection,perspectiveTransform:true,colorMode:colorMode});
-          let image = document.createElement("img");
-          image.src = croppedImage;
-          container.appendChild(image);
+        try {
+          const selections = await cropper.getAllSelections();
+          let container = document.getElementsByClassName("croppedImageContainer")[0];
+          container.innerHTML = "";
+          let colorMode = document.getElementById("colorMode").selectedOptions[0].value;
+          for (let index = 0; index < selections.length; index++) {
+            const selection = selections[index];
+            let croppedImage = await cropper.getCroppedImage({selection:selection,perspectiveTransform:true,colorMode:colorMode});
+            let image = document.createElement("img");
+            image.src = croppedImage;
+            container.appendChild(image);
+          }
+          document.getElementById("cropper").style.display = "none";
+        } catch (error) {
+          alert("Failed to get the normalized image. Please check the coordinates.");
         }
-        
       }
       const selectionClicked = async (e) => {
         const index = e.detail;
