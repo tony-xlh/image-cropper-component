@@ -1,0 +1,135 @@
+<!doctype html><html dir="ltr" lang="en"><head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"> <title>Stencil Component Starter</title> <script src="https://cdn.jsdelivr.net/npm/dynamsoft-core@3.0.30/dist/core.js"></script> <script src="https://cdn.jsdelivr.net/npm/dynamsoft-license@3.0.20/dist/license.js"></script> <script src="https://cdn.jsdelivr.net/npm/dynamsoft-document-normalizer@2.0.20/dist/ddn.js"></script> <script src="https://cdn.jsdelivr.net/npm/dynamsoft-capture-vision-router@2.0.30/dist/cvr.js"></script> <script type="module">
+  import { defineCustomElements } from '/dist/esm/loader.js';
+  defineCustomElements();
+</script> <style>img {
+        max-width: 100%;
+        max-height: 350px;
+        margin-bottom: 1em;
+        display: block;
+      }
+
+      #cropper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }</style> </head> <body> <div> Load local image: <input type="file" id="file" onchange="loadImageFromFile();" accept=".jpg,.jpeg,.png,.bmp"> <div> <button onclick="openCropper()">Open Cropper</button> <br> <label> Detect with <a href="https://www.dynamsoft.com/document-normalizer/docs/">Dynamsoft Document Normalizer</a>: <input type="checkbox" id="enableDDN" checked="" onchange="DDNCheckboxUpdated()"> </label> <label id="colorModeLabel"> Color mode: <select id="colorMode"> <option value="binary"> Black &amp; White </option> <option value="gray"> Gray </option> <option value="color"> Color </option> </select> </label> <span id="status"></span> </div> </div> <div> <div>Original:</div> <div class="orginalImageContainer"></div> <div>Cropped:</div> <div class="croppedImageContainer"></div> </div> <div id="cropper" style="display: none;"> <image-cropper style="--active-stroke: 5; --active-color: orange; --inactive-color: orange;"></image-cropper> </div> <script>
+    let usingQuad = false;
+    window.onload = function(){
+      registerEventsForCropper();
+    }
+
+    function loadImageFromFile() { 
+      let files = document.getElementById('file').files;
+      if (files.length == 0) {
+        return;
+      }
+      let file = files[0];
+      fileReader = new FileReader();
+      fileReader.onload = function(e){
+        let container = document.getElementsByClassName("orginalImageContainer")[0];
+        container.innerHTML = "";
+        let img = document.createElement("img");
+        img.src = e.target.result;
+        img.id = "original";
+        container.appendChild(img);
+      };
+      fileReader.onerror = function () {
+        console.warn('oops, something went wrong.');
+      };
+      fileReader.readAsDataURL(file);
+    }
+
+    function registerEventsForCropper(){
+      console.log("register events");
+      let cropper = document.querySelector("image-cropper");
+      const canceled = () => {
+        document.getElementById("cropper").style.display = "none";
+      }
+      const confirmed = async () => {
+        document.getElementById("cropper").style.display = "none";
+        const selections = await cropper.getAllSelections();
+        let container = document.getElementsByClassName("croppedImageContainer")[0];
+        container.innerHTML = "";
+        let colorMode = document.getElementById("colorMode").selectedOptions[0].value;
+        for (let index = 0; index < selections.length; index++) {
+          const selection = selections[index];
+          let croppedImage = await cropper.getCroppedImage({selection:selection,perspectiveTransform:true,colorMode:colorMode});
+          let image = document.createElement("img");
+          image.src = croppedImage;
+          container.appendChild(image);
+        }
+        
+      }
+      const selectionClicked = async (e) => {
+        const index = e.detail;
+        let selections = await cropper.getAllSelections();
+        let selectedSelection = selections[index];
+        if ("width" in selectedSelection) {
+          cropper.rect = selectedSelection;
+        }else{
+          cropper.quad = selectedSelection;
+        }
+        selections.splice(index,1);
+        cropper.inactiveSelections = selections;
+      }
+
+      cropper.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==";
+      cropper.addEventListener("canceled",canceled);
+      cropper.addEventListener("confirmed",confirmed);
+      cropper.addEventListener("selectionClicked",selectionClicked)
+    }
+
+    async function openCropper(){
+      if (!document.getElementById("original")) {
+        return;
+      }
+      let cropper = document.querySelector("image-cropper");
+      cropper.img = document.getElementById("original");
+      cropper.inactiveSelections = [];
+      let quads = [];
+      if (document.getElementById("enableDDN").checked === true) {
+        usingQuad = true;
+        document.getElementById("status").innerText = "Detecting...";
+        try {
+          quads = await cropper.detect(cropper.img);  
+        } catch (error) {
+          console.log(error);
+        }
+        console.log(quads);
+        document.getElementById("status").innerText = "";
+        if (quads.length>0) {
+          cropper.quad = quads[0].location;
+          if (quads.length>1) {
+            let inactiveSelections = [];
+            for (let index = 1; index < quads.length; index++) {
+              const quad = quads[index];
+              inactiveSelections.push(quad.location);
+            }
+            cropper.inactiveSelections = inactiveSelections;
+          }
+        }else{
+          cropper.quad = {points:[{x:50,y:50},{x:250,y:50},{x:250,y:250},{x:50,y:250}]};
+        }
+      }else{
+        usingQuad = false;
+        const x = cropper.img.naturalWidth * 0.1;
+        const y = cropper.img.naturalHeight * 0.1;
+        const w = cropper.img.naturalWidth * 0.8;
+        const h = cropper.img.naturalHeight * 0.8;
+        cropper.rect = {x:x,y:y,width:w,height:h};
+        //cropper.inactiveSelections = [{x:100,y:100,width:200,height:200},{x:150,y:150,width:200,height:200}];
+        //console.log(cropper);
+      }
+      document.getElementById("cropper").style.display = "";
+    }
+
+    function DDNCheckboxUpdated(){
+      if (document.getElementById("enableDDN").checked) {
+        document.getElementById("colorModeLabel").style.display = "";
+      }else{
+        document.getElementById("colorModeLabel").style.display = "none";
+      }
+    }
+  </script> </body></html>
