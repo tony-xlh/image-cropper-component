@@ -98,6 +98,7 @@
       let cropper = document.querySelector("image-cropper");
       const canceled = () => {
         document.getElementById("cropper").style.display = "none";
+        document.body.style.overflow = "";
       }
       const confirmed = async () => {
         try {
@@ -116,6 +117,7 @@
         } catch (error) {
           alert("Failed to get the normalized image. Please check the coordinates.");
         }
+        document.body.style.overflow = "";
       }
       const selectionClicked = async (e) => {
         const index = e.detail;
@@ -140,6 +142,7 @@
       if (!document.getElementById("original")) {
         return;
       }
+      document.body.style.overflow = "hidden";
       let cropper = document.querySelector("image-cropper");
       cropper.img = document.getElementById("original");
       cropper.inactiveSelections = [];
