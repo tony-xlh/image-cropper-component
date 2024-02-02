@@ -211,6 +211,7 @@ export class ImageCropper {
             onMouseDown={(e:MouseEvent)=>this.onHandlerMouseDown(e,index)}
             onMouseUp={(e:MouseEvent)=>this.onHandlerMouseUp(e)}
             onTouchStart={(e:TouchEvent)=>this.onHandlerTouchStart(e,index)}
+            onPointerDown={(e:PointerEvent)=>this.onHandlerPointerDown(e,index)}
           />
         ))}
       </Fragment>
@@ -510,6 +511,13 @@ export class ImageCropper {
     this.selectedHandlerIndex = index;
   }
 
+  onHandlerPointerDown(e:PointerEvent,index:number) {
+    if (e.pointerType === "touch") {
+      this.onHandlerMouseDown(e,index);
+      e.preventDefault();
+    }
+  }
+
   getPointIndexFromHandlerIndex(index:number){
     if (index === 0) {
       return 0;
@@ -782,6 +790,36 @@ export class ImageCropper {
     return "100%";
   }
 
+  onSVGPointerMove(e:PointerEvent){
+    if (e.pointerType != "mouse" && !this.usingTouchEvent) {
+      e.stopPropagation();
+      e.preventDefault();
+      this.onSVGMouseMove(e);
+    }
+  }
+
+  onSVGPointerDown(e:PointerEvent){
+    if (e.pointerType != "mouse" && !this.usingTouchEvent) {
+      this.onSVGMouseDown(e);
+    }
+  }
+
+  onSVGPointerUp() {
+    this.svgMouseDownPoint = undefined;
+  }
+
+  onPolygonPointerDown(e:PointerEvent){
+    if (e.pointerType != "mouse" && !this.usingTouchEvent) {
+      this.onPolygonMouseDown(e);
+    }
+  }
+
+  onPolygonPointerUp(e:PointerEvent){
+    e.stopPropagation();
+    this.selectedHandlerIndex = -1;
+    this.polygonMouseDown = false;
+  }
+
   render() {
     return (
       <Host ref={(el) => this.root = el}>
@@ -807,6 +845,9 @@ export class ImageCropper {
             onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}
             onTouchEnd={()=>this.onSVGTouchEnd()}
             onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
+            onPointerMove={(e:PointerEvent)=>this.onSVGPointerMove(e)}
+            onPointerDown={(e:PointerEvent)=>this.onSVGPointerDown(e)}
+            onPointerUp={()=>this.onSVGPointerUp()}
           >
             <image href={this.img ? this.img.src : ""}></image>
             {this.rendenInactiveSelections()}
@@ -819,6 +860,8 @@ export class ImageCropper {
               onMouseUp={(e:MouseEvent)=>this.onPolygonMouseUp(e)}
               onTouchStart={(e:TouchEvent)=>this.onPolygonTouchStart(e)}
               onTouchEnd={(e:TouchEvent)=>this.onPolygonTouchEnd(e)}
+              onPointerDown={(e:PointerEvent)=>this.onPolygonPointerDown(e)}
+              onPointerUp={(e:PointerEvent)=>this.onPolygonPointerUp(e)}
             >
             </polygon>
             {this.renderHandlers()}
