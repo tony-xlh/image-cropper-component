@@ -791,6 +791,7 @@ export class ImageCropper {
   }
 
   onSVGPointerMove(e:PointerEvent){
+    console.log(e);
     if (e.pointerType != "mouse" && !this.usingTouchEvent) {
       e.stopPropagation();
       e.preventDefault();
@@ -804,8 +805,11 @@ export class ImageCropper {
     }
   }
 
-  onSVGPointerUp() {
-    this.svgMouseDownPoint = undefined;
+  onSVGPointerUp(e:PointerEvent) {
+    if (e.pointerType != "mouse" && !this.usingTouchEvent) {
+      this.svgMouseDownPoint = undefined;
+      this.selectedHandlerIndex = -1;
+    }
   }
 
   onPolygonPointerDown(e:PointerEvent){
@@ -847,7 +851,7 @@ export class ImageCropper {
             onTouchMove={(e:TouchEvent)=>this.onSVGTouchMove(e)}
             onPointerMove={(e:PointerEvent)=>this.onSVGPointerMove(e)}
             onPointerDown={(e:PointerEvent)=>this.onSVGPointerDown(e)}
-            onPointerUp={()=>this.onSVGPointerUp()}
+            onPointerUp={(e:PointerEvent)=>this.onSVGPointerUp(e)}
           >
             <image href={this.img ? this.img.src : ""}></image>
             {this.rendenInactiveSelections()}

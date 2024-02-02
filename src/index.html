@@ -2,7 +2,7 @@
 <html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Stencil Component Starter</title>
     <script src="https://cdn.jsdelivr.net/npm/dynamsoft-core@3.0.30/dist/core.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dynamsoft-license@3.0.20/dist/license.js"></script>
@@ -11,6 +11,15 @@
     <script type="module" src="/build/image-cropper-component.esm.js"></script>
     <script nomodule src="/build/image-cropper-component.js"></script>
     <style>
+      * {
+        padding:0;
+        margin:0;
+      }
+
+      body {
+        -ms-content-zooming: none;
+      }
+      
       img {
         max-width: 100%;
         max-height: 350px;
