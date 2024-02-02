@@ -333,7 +333,7 @@ export class ImageCropper {
       this.scale = this.scale + 0.1;
     }else{
       this.scale = Math.max(0.1, this.scale - 0.1);
-    }
+    } 
     e.preventDefault();
   }
 
@@ -791,7 +791,7 @@ export class ImageCropper {
   }
 
   onSVGPointerMove(e:PointerEvent){
-    console.log(e);
+    //console.log(e);
     if (e.pointerType != "mouse" && !this.usingTouchEvent) {
       e.stopPropagation();
       e.preventDefault();
