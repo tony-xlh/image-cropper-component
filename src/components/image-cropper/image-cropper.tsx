@@ -345,10 +345,10 @@ export class ImageCropper {
   }
 
   onContainerTouchMove(e:TouchEvent) {
+    e.preventDefault();
     if (e.touches.length === 2) {
       this.pinchAndZoom(e);
     }
-    e.preventDefault();
   }
 
   getPanAndZoomStyle(){
