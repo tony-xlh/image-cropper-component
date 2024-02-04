@@ -34,7 +34,20 @@ export interface ImageCropperCustomEvent<T> extends CustomEvent<T> {
     target: HTMLImageCropperElement;
 }
 declare global {
+    interface HTMLImageCropperElementEventMap {
+        "confirmed": void;
+        "canceled": void;
+        "selectionClicked": number;
+    }
     interface HTMLImageCropperElement extends Components.ImageCropper, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLImageCropperElementEventMap>(type: K, listener: (this: HTMLImageCropperElement, ev: ImageCropperCustomEvent<HTMLImageCropperElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLImageCropperElementEventMap>(type: K, listener: (this: HTMLImageCropperElement, ev: ImageCropperCustomEvent<HTMLImageCropperElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLImageCropperElement: {
         prototype: HTMLImageCropperElement;
