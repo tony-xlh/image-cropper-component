@@ -44,6 +44,7 @@ export class ImageCropper {
   svgMouseDownPoint:Point|undefined = undefined;
   handlerMouseDownPoint:Point = {x:0,y:0};
   root:HTMLElement;
+  containerElement:HTMLElement;
   svgElement:SVGElement;
   canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
@@ -68,6 +69,12 @@ export class ImageCropper {
   @Event() confirmed?: EventEmitter<void>;
   @Event() canceled?: EventEmitter<void>;
   @Event() selectionClicked?: EventEmitter<number>;
+
+  componentDidLoad(){
+    this.containerElement.addEventListener("touchmove", (e:TouchEvent) => {
+      this.onContainerTouchMove(e);
+    })
+  }
 
   @Watch('img')
   watchImgPropHandler(newValue: HTMLImageElement) {
@@ -791,7 +798,6 @@ export class ImageCropper {
   }
 
   onSVGPointerMove(e:PointerEvent){
-    //console.log(e);
     if (e.pointerType != "mouse" && !this.usingTouchEvent) {
       e.stopPropagation();
       e.preventDefault();
@@ -828,9 +834,9 @@ export class ImageCropper {
     return (
       <Host ref={(el) => this.root = el}>
         <div class="container absolute"
+          ref={(el) => this.containerElement = el}
           onWheel={(e:WheelEvent)=>this.onContainerWheel(e)}
           onMouseUp={()=>this.onContainerMouseUp()}
-          onTouchMove={(e:TouchEvent)=>this.onContainerTouchMove(e)}
         >
           <canvas 
             ref={(el) => this.canvasElement = el as HTMLCanvasElement}
