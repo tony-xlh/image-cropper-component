@@ -512,7 +512,7 @@ export class ImageCropper {
   }
 
   onHandlerPointerDown(e:PointerEvent,index:number) {
-    if (e.pointerType === "touch") {
+    if (e.pointerType != "mouse" && !this.usingTouchEvent) {
       this.onHandlerMouseDown(e,index);
       e.preventDefault();
     }
