@@ -74,6 +74,9 @@ export class ImageCropper {
     this.containerElement.addEventListener("touchmove", (e:TouchEvent) => {
       this.onContainerTouchMove(e);
     })
+    this.containerElement.addEventListener("touchend", () => {
+      this.previousDistance = undefined;
+    })
   }
 
   @Watch('img')
