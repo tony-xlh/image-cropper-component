@@ -101,7 +101,11 @@ export class ImageCropper {
   watchRectPropHandler(newValue: Rect) {
     if (newValue) {
       this.usingQuad = false;
-      this.points = this.getPointsFromRect(newValue);
+      let points = this.getPointsFromRect(newValue);
+      if (this.img) {
+        this.restrainPointsInBounds(points,this.img.naturalWidth,this.img.naturalHeight);
+      }
+      this.points = points;
     }
   }
 
@@ -117,6 +121,10 @@ export class ImageCropper {
   watchQuadPropHandler(newValue: Quad) {
     if (newValue) {
       this.usingQuad = true;
+      let points = newValue.points;
+      if (this.img) {
+        this.restrainPointsInBounds(points,this.img.naturalWidth,this.img.naturalHeight);
+      }
       this.points = newValue.points;
     }
   }
@@ -444,7 +452,9 @@ export class ImageCropper {
           newPoints[3].x = this.originalPoints[3].x + offsetX;
         }
       }
-      this.restrainPointsInBounds(newPoints,this.img.naturalWidth,this.img.naturalHeight);
+      if (this.img) {
+        this.restrainPointsInBounds(newPoints,this.img.naturalWidth,this.img.naturalHeight);
+      }
       this.points = newPoints;
     }
   }

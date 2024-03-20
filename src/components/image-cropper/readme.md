@@ -33,6 +33,12 @@
 
 
 
+#### Parameters
+
+| Name     | Type                                                      | Description |
+| -------- | --------------------------------------------------------- | ----------- |
+| `source` | `string \| HTMLCanvasElement \| HTMLImageElement \| Blob` |             |
+
 #### Returns
 
 Type: `Promise<DetectedQuadResult[]>`
@@ -43,6 +49,12 @@ Type: `Promise<DetectedQuadResult[]>`
 
 
 
+#### Parameters
+
+| Name        | Type               | Description |
+| ----------- | ------------------ | ----------- |
+| `convertTo` | `"rect" \| "quad"` |             |
+
 #### Returns
 
 Type: `Promise<(Quad | Rect)[]>`
@@ -52,6 +64,12 @@ Type: `Promise<(Quad | Rect)[]>`
 ### `getCroppedImage(options: CropOptions) => Promise<string>`
 
 
+
+#### Parameters
+
+| Name      | Type          | Description |
+| --------- | ------------- | ----------- |
+| `options` | `CropOptions` |             |
 
 #### Returns
 
