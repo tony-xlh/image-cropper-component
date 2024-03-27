@@ -2,6 +2,10 @@
 
 # Image Cropper Component
 
+![version](https://img.shields.io/npm/v/image-cropper-component.svg)
+![downloads](https://img.shields.io/npm/dm/image-cropper-component.svg)
+![jsdelivr](https://img.shields.io/jsdelivr/npm/hm/image-cropper-component.svg)
+
 An image cropper web component which allows users to crop a rectangle or a 4-point polygon. Perspective transformation is performed using [Dynamsoft Document Normalizer](https://www.dynamsoft.com/document-normalizer/docs/introduction/) for polygon. It supports editing multiple objects in one image.
 
 ![polygon-normalizing](https://github.com/tony-xlh/image-cropper-component/assets/5462205/7ff43017-eb50-4da1-9b53-f7a825ca11da)
