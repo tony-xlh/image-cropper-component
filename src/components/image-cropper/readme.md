@@ -7,15 +7,16 @@
 
 ## Properties
 
-| Property             | Attribute     | Description | Type               | Default     |
-| -------------------- | ------------- | ----------- | ------------------ | ----------- |
-| `handlersize`        | `handlersize` |             | `string`           | `undefined` |
-| `hidefooter`         | `hidefooter`  |             | `string`           | `undefined` |
-| `img`                | --            |             | `HTMLImageElement` | `undefined` |
-| `inactiveSelections` | --            |             | `(Quad \| Rect)[]` | `undefined` |
-| `license`            | `license`     |             | `string`           | `undefined` |
-| `quad`               | --            |             | `Quad`             | `undefined` |
-| `rect`               | --            |             | `Rect`             | `undefined` |
+| Property             | Attribute      | Description | Type                   | Default     |
+| -------------------- | -------------- | ----------- | ---------------------- | ----------- |
+| `draggingmode`       | `draggingmode` |             | `"x-only" \| "y-only"` | `undefined` |
+| `handlersize`        | `handlersize`  |             | `string`               | `undefined` |
+| `hidefooter`         | `hidefooter`   |             | `string`               | `undefined` |
+| `img`                | --             |             | `HTMLImageElement`     | `undefined` |
+| `inactiveSelections` | --             |             | `(Quad \| Rect)[]`     | `undefined` |
+| `license`            | `license`      |             | `string`               | `undefined` |
+| `quad`               | --             |             | `Quad`                 | `undefined` |
+| `rect`               | --             |             | `Rect`                 | `undefined` |
 
 
 ## Events

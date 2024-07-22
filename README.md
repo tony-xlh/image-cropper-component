@@ -53,6 +53,7 @@ Props:
 "quad"?: Quad;
 "rect"?: Rect;
 "inactiveSelections": (Quad|Rect)[] // other selections which are not active
+draggingmode?: "x-only"|"y-only"; //limit the direction for dragging
 ```
 
 Interfaces:

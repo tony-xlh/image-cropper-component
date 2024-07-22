@@ -14,6 +14,7 @@ export { DetectedQuadResultItem, NormalizedImageResultItem } from "dynamsoft-doc
 export namespace Components {
     interface ImageCropper {
         "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
+        "draggingmode"?: "x-only"|"y-only";
         "getAllSelections": (convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>;
         "getCroppedImage": (options: CropOptions) => Promise<string>;
         "getPoints": () => Promise<[Point, Point, Point, Point]>;
@@ -59,6 +60,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface ImageCropper {
+        "draggingmode"?: "x-only"|"y-only";
         "handlersize"?: string;
         "hidefooter"?: string;
         "img"?: HTMLImageElement;

@@ -58,6 +58,7 @@ export class ImageCropper {
   @Prop() hidefooter?: string;
   @Prop() handlersize?: string;
   @Prop() inactiveSelections?: (Quad|Rect)[];
+  @Prop() draggingmode?: "x-only"|"y-only";
   @State() viewBox:string = "0 0 1280 720";
   @State() activeStroke:number = 2;
   @State() inActiveStroke:number = 4;
@@ -392,8 +393,16 @@ export class ImageCropper {
     //console.log(offsetX)
     //console.log(offsetY)
     //e.g img width: 100, offsetX: -10, translateX: -10%
-    this.offsetX = this.offsetX + offsetX;
-    this.offsetY = this.offsetY + offsetY;
+    if (this.draggingmode) {
+      if (this.draggingmode == "x-only") {
+        this.offsetX = this.offsetX + offsetX;  
+      }else if (this.draggingmode == "y-only") {
+        this.offsetY = this.offsetY + offsetY;
+      }
+    }else{
+      this.offsetX = this.offsetX + offsetX;
+      this.offsetY = this.offsetY + offsetY;
+    }
   }
 
   handleMoveEvent(e:MouseEvent|TouchEvent){
