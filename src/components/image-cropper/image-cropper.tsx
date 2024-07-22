@@ -70,6 +70,7 @@ export class ImageCropper {
   @Event() confirmed?: EventEmitter<void>;
   @Event() canceled?: EventEmitter<void>;
   @Event() selectionClicked?: EventEmitter<number>;
+  @Event() imageLoaded?: EventEmitter<void>;
 
   componentDidLoad(){
     this.containerElement.addEventListener("touchmove", (e:TouchEvent) => {
@@ -798,6 +799,15 @@ export class ImageCropper {
     }
   }
 
+  @Method()
+  async fitWidth():Promise<void>
+  {
+    let svgWidth = this.svgElement.clientWidth;
+    let parentWidth = this.svgElement.parentElement.clientWidth;
+    let newScale = parentWidth / svgWidth;
+    this.scale = newScale;
+  }
+
   async initCVR(){
     window["Dynamsoft"]["License"]["LicenseManager"].initLicense(this.license);
     window["Dynamsoft"]["Core"]["CoreModule"].loadWasm(["DDN"]);
@@ -852,6 +862,12 @@ export class ImageCropper {
     this.polygonMouseDown = false;
   }
 
+  onImageLoaded(){
+    if (this.imageLoaded) {
+      this.imageLoaded.emit();
+    }
+  }
+
   render() {
     return (
       <Host ref={(el) => this.root = el}>
@@ -881,7 +897,10 @@ export class ImageCropper {
             onPointerDown={(e:PointerEvent)=>this.onSVGPointerDown(e)}
             onPointerUp={(e:PointerEvent)=>this.onSVGPointerUp(e)}
           >
-            <image href={this.img ? this.img.src : ""}></image>
+            <image 
+              onLoad={()=>this.onImageLoaded()}
+              href={this.img ? this.img.src : ""}>
+            </image>
             {this.rendenInactiveSelections()}
             <polygon
               points={this.getPointsData()}

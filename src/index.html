@@ -145,6 +145,9 @@
       cropper.addEventListener("canceled",canceled);
       cropper.addEventListener("confirmed",confirmed);
       cropper.addEventListener("selectionClicked",selectionClicked)
+      cropper.addEventListener("imageLoaded",function(){
+        cropper.fitWidth();
+      })
     }
 
     async function openCropper(){
@@ -190,6 +193,7 @@
         //console.log(cropper);
       }
       document.getElementById("cropper").style.display = "";
+      
     }
 
     function DDNCheckboxUpdated(){

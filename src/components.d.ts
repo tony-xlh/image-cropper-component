@@ -15,6 +15,7 @@ export namespace Components {
     interface ImageCropper {
         "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
         "draggingmode"?: "x-only"|"y-only";
+        "fitWidth": () => Promise<void>;
         "getAllSelections": (convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>;
         "getCroppedImage": (options: CropOptions) => Promise<string>;
         "getPoints": () => Promise<[Point, Point, Point, Point]>;
@@ -39,6 +40,7 @@ declare global {
         "confirmed": void;
         "canceled": void;
         "selectionClicked": number;
+        "imageLoaded": void;
     }
     interface HTMLImageCropperElement extends Components.ImageCropper, HTMLStencilElement {
         addEventListener<K extends keyof HTMLImageCropperElementEventMap>(type: K, listener: (this: HTMLImageCropperElement, ev: ImageCropperCustomEvent<HTMLImageCropperElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -68,6 +70,7 @@ declare namespace LocalJSX {
         "license"?: string;
         "onCanceled"?: (event: ImageCropperCustomEvent<void>) => void;
         "onConfirmed"?: (event: ImageCropperCustomEvent<void>) => void;
+        "onImageLoaded"?: (event: ImageCropperCustomEvent<void>) => void;
         "onSelectionClicked"?: (event: ImageCropperCustomEvent<number>) => void;
         "quad"?: Quad;
         "rect"?: Rect;
