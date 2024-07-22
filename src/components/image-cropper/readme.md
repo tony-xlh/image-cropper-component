@@ -25,6 +25,7 @@
 | ------------------ | ----------- | --------------------- |
 | `canceled`         |             | `CustomEvent<void>`   |
 | `confirmed`        |             | `CustomEvent<void>`   |
+| `imageLoaded`      |             | `CustomEvent<void>`   |
 | `selectionClicked` |             | `CustomEvent<number>` |
 
 
@@ -43,6 +44,36 @@
 #### Returns
 
 Type: `Promise<DetectedQuadResult[]>`
+
+
+
+### `fitActualSize() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `fitWidth() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `fitWindow() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
 
 
 
