@@ -808,6 +808,15 @@ export class ImageCropper {
     this.scale = newScale;
   }
 
+  @Method()
+  async fitActualSize():Promise<void>
+  {
+    let svgWidth = this.svgElement.clientWidth;
+    let imgWidth = this.img.naturalWidth;
+    let newScale = imgWidth / svgWidth * this.scale;
+    this.scale = newScale;
+  }
+
   async initCVR(){
     window["Dynamsoft"]["License"]["LicenseManager"].initLicense(this.license);
     window["Dynamsoft"]["Core"]["CoreModule"].loadWasm(["DDN"]);

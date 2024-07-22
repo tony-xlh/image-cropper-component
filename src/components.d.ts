@@ -15,6 +15,7 @@ export namespace Components {
     interface ImageCropper {
         "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
         "draggingmode"?: "x-only"|"y-only";
+        "fitActualSize": () => Promise<void>;
         "fitWidth": () => Promise<void>;
         "getAllSelections": (convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>;
         "getCroppedImage": (options: CropOptions) => Promise<string>;
