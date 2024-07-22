@@ -33,7 +33,7 @@ cropper.img = document.getElementById("original");
 cropper.rect = {x:50,y:50,width:200,height:200}; // or quadrilateral: cropper.quad = {points:[{x:50,y:50},{x:250,y:50},{x:250,y:250},{x:50,y:250}]};
 ```
 
-It has several methods related to detecting document borders, getting the coordinates, and getting the cropped image.
+It has several methods related to detecting document borders, getting the coordinates, getting the cropped image and updating the view.
 
 ```ts
 "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
@@ -42,6 +42,9 @@ It has several methods related to detecting document borders, getting the coordi
 "getPoints": () => Promise<[Point, Point, Point, Point]>;
 "getQuad": () => Promise<Quad>;
 "getRect": () => Promise<Rect>;
+"fitWidth": () => Promise<void>;
+"fitActualSize": () => Promise<void>;
+"fitWindow": () => Promise<void>;
 ```
 
 Props:
@@ -53,7 +56,7 @@ Props:
 "quad"?: Quad;
 "rect"?: Rect;
 "inactiveSelections": (Quad|Rect)[] // other selections which are not active
-draggingmode?: "x-only"|"y-only"; //limit the direction for dragging
+"draggingmode"?: "x-only"|"y-only"; //limit the direction for dragging
 ```
 
 Interfaces:
@@ -97,6 +100,7 @@ Events:
 "onCanceled"?: (event: ImageCropperCustomEvent<void>) => void;
 "onConfirmed"?: (event: ImageCropperCustomEvent<void>) => void;
 "onSelectionClicked"?: (event: ImageCropperCustomEvent<number>) => void;
+"onImageLoaded"?: (event: ImageCropperCustomEvent<void>) => void;
 ```
 
 You can customize the style of the selection with the following CSS:
