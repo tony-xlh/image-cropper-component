@@ -81,9 +81,9 @@
 }
 
 .cropper-svg {
-  align-self: center;
   touch-action: none;
   cursor:grab;
+  position: absolute;
 }
 
 .cropper-svg polygon {

@@ -366,9 +366,9 @@ export class ImageCropper {
 
   getPanAndZoomStyle(){
     if (this.img) {
-      const percentX = this.offsetX / this.img.naturalWidth * 100; 
-      const percentY = this.offsetY / this.img.naturalHeight * 100;
-      return "scale("+this.scale+") translateX("+percentX+"%)translateY("+percentY+"%)";
+      //const percentX = this.offsetX / this.img.naturalWidth * 100; 
+      //const percentY = this.offsetY / this.img.naturalHeight * 100;
+      return "scale("+this.scale+")";
     }else{
       return "scale(1.0)";
     }
@@ -831,8 +831,15 @@ export class ImageCropper {
   {
     if (this.scale>1.0) {
       let imgHeight = this.img.naturalHeight;
-      this.offsetY = imgHeight * 0.5 / this.scale
+      this.offsetY = imgHeight * (this.scale - 1.0) / 0.5 * 0.25
     }
+  }
+
+  @Method()
+  async centerAlign():Promise<void>
+  {
+    let width = this.img.naturalWidth;
+    this.offsetY = width * 0.5;
   }
 
   async initCVR(){
@@ -895,6 +902,24 @@ export class ImageCropper {
     }
   }
 
+  getPanTop():string {
+    if (this.img) {
+      const percentY = this.offsetY / this.img.naturalHeight * 100
+      return percentY+"%";
+    }else{
+      return "0%";
+    }
+  }
+
+  getPanLeft():string {
+    if (this.img) {
+      const percentX = this.offsetX / this.img.naturalWidth * 100; 
+      return percentX+"%";
+    }else{
+      return "0%";
+    }
+  }
+
   render() {
     return (
       <Host ref={(el) => this.root = el}>
@@ -914,7 +939,7 @@ export class ImageCropper {
             xmlns="http://www.w3.org/2000/svg"
             viewBox={this.viewBox}
             width={this.getSVGWidth()}
-            style={{transform:this.getPanAndZoomStyle()}}
+            style={{transform:this.getPanAndZoomStyle(),top:this.getPanTop(),left:this.getPanLeft()}}
             onMouseMove={(e:MouseEvent)=>this.onSVGMouseMove(e)}
             onMouseDown={(e:MouseEvent)=>this.onSVGMouseDown(e)}
             onTouchStart={(e:TouchEvent)=>this.onSVGTouchStart(e)}

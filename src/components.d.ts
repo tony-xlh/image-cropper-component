@@ -13,6 +13,7 @@ export { CapturedResult } from "dynamsoft-core";
 export { DetectedQuadResultItem, NormalizedImageResultItem } from "dynamsoft-document-normalizer";
 export namespace Components {
     interface ImageCropper {
+        "centerAlign": () => Promise<void>;
         "detect": (source: string | HTMLImageElement | Blob | HTMLCanvasElement) => Promise<DetectedQuadResult[]>;
         "draggingmode"?: "x-only"|"y-only";
         "fitActualSize": () => Promise<void>;
