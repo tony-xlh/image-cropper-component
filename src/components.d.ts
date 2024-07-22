@@ -17,6 +17,7 @@ export namespace Components {
         "draggingmode"?: "x-only"|"y-only";
         "fitActualSize": () => Promise<void>;
         "fitWidth": () => Promise<void>;
+        "fitWindow": () => Promise<void>;
         "getAllSelections": (convertTo?: "rect" | "quad") => Promise<(Quad | Rect)[]>;
         "getCroppedImage": (options: CropOptions) => Promise<string>;
         "getPoints": () => Promise<[Point, Point, Point, Point]>;

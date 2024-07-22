@@ -809,6 +809,15 @@ export class ImageCropper {
   }
 
   @Method()
+  async fitWindow():Promise<void>
+  {
+    let svgHeight = this.svgElement.clientHeight;
+    let parentHeight = this.svgElement.parentElement.clientHeight;
+    let newScale = parentHeight / svgHeight;
+    this.scale = newScale;
+  }
+
+  @Method()
   async fitActualSize():Promise<void>
   {
     let svgWidth = this.svgElement.clientWidth;
