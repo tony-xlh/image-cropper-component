@@ -147,8 +147,15 @@
       cropper.addEventListener("selectionClicked",selectionClicked)
       cropper.addEventListener("imageLoaded",async function(){
         await cropper.fitWidth();
+        await sleep(0);
         await cropper.goToTop();
       })
+    }
+
+    function sleep(time){
+      return new Promise(function(resolve){
+        setTimeout(resolve, time);
+      });
     }
 
     async function openCropper(){

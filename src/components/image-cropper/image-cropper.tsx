@@ -46,6 +46,7 @@ export class ImageCropper {
   root:HTMLElement;
   containerElement:HTMLElement;
   svgElement:SVGElement;
+  imgElement:SVGImageElement;
   canvasElement:HTMLCanvasElement;
   originalPoints:[Point,Point,Point,Point] = undefined;
   cvr:CaptureVisionRouter|undefined;
@@ -71,7 +72,6 @@ export class ImageCropper {
   @Event() canceled?: EventEmitter<void>;
   @Event() selectionClicked?: EventEmitter<number>;
   @Event() imageLoaded?: EventEmitter<void>;
-
   componentDidLoad(){
     this.containerElement.addEventListener("touchmove", (e:TouchEvent) => {
       this.onContainerTouchMove(e);
@@ -829,10 +829,12 @@ export class ImageCropper {
   @Method()
   async goToTop():Promise<void>
   {
-    if (this.scale>1.0) {
-      let imgHeight = this.img.naturalHeight;
-      this.offsetY = imgHeight * 0.5 / this.scale
-    }
+    //console.log("go to top");
+    let rect = this.imgElement.getBoundingClientRect();
+    //console.log(rect);
+    let scale = rect.width / this.img.naturalWidth
+    this.offsetY = -rect.top / scale;
+    //console.log(this.offsetY);
   }
 
   async initCVR(){
@@ -926,6 +928,7 @@ export class ImageCropper {
           >
             <image 
               onLoad={()=>this.onImageLoaded()}
+              ref={(el) => this.imgElement = el as SVGImageElement}
               href={this.img ? this.img.src : ""}>
             </image>
             {this.rendenInactiveSelections()}
