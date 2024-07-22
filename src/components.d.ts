@@ -23,6 +23,7 @@ export namespace Components {
         "getPoints": () => Promise<[Point, Point, Point, Point]>;
         "getQuad": () => Promise<Quad>;
         "getRect": () => Promise<Rect>;
+        "goToTop": () => Promise<void>;
         "handlersize"?: string;
         "hidefooter"?: string;
         "img"?: HTMLImageElement;

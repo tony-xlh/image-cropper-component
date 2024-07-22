@@ -145,8 +145,9 @@
       cropper.addEventListener("canceled",canceled);
       cropper.addEventListener("confirmed",confirmed);
       cropper.addEventListener("selectionClicked",selectionClicked)
-      cropper.addEventListener("imageLoaded",function(){
-        cropper.fitWindow();
+      cropper.addEventListener("imageLoaded",async function(){
+        await cropper.fitWidth();
+        await cropper.goToTop();
       })
     }
 

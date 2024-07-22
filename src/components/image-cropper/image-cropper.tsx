@@ -826,6 +826,15 @@ export class ImageCropper {
     this.scale = newScale;
   }
 
+  @Method()
+  async goToTop():Promise<void>
+  {
+    if (this.scale>1.0) {
+      let imgHeight = this.img.naturalHeight;
+      this.offsetY = imgHeight * 0.5 / this.scale
+    }
+  }
+
   async initCVR(){
     window["Dynamsoft"]["License"]["LicenseManager"].initLicense(this.license);
     window["Dynamsoft"]["Core"]["CoreModule"].loadWasm(["DDN"]);
