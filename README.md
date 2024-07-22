@@ -42,9 +42,11 @@ It has several methods related to detecting document borders, getting the coordi
 "getPoints": () => Promise<[Point, Point, Point, Point]>;
 "getQuad": () => Promise<Quad>;
 "getRect": () => Promise<Rect>;
+"resetStates": () => Promise<void>;
 "fitWidth": () => Promise<void>;
 "fitActualSize": () => Promise<void>;
 "fitWindow": () => Promise<void>;
+"goToTop": () => Promise<void>;
 ```
 
 Props:

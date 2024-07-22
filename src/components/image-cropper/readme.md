@@ -139,6 +139,16 @@ Type: `Promise<Rect>`
 
 
 
+### `goToTop() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `resetStates() => Promise<void>`
 
 
