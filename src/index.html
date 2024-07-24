@@ -145,11 +145,11 @@
       cropper.addEventListener("canceled",canceled);
       cropper.addEventListener("confirmed",confirmed);
       cropper.addEventListener("selectionClicked",selectionClicked)
-      cropper.addEventListener("imageLoaded",async function(){
-        await cropper.fitWidth();
-        await sleep(200);
-        await cropper.goToTop();
-      })
+      //cropper.addEventListener("imageLoaded",async function(){
+      //  await cropper.fitWidth();
+      //  await sleep(200);
+      //  await cropper.goToTop();
+      //})
     }
 
     function sleep(time){
