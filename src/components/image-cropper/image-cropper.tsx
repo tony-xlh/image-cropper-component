@@ -566,19 +566,29 @@ export class ImageCropper {
   //Convert the screen coordinates to the SVG's coordinates from https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
   getMousePosition(event:any,svg:any) {
     let CTM = svg.getScreenCTM();
+    let pos = {x:0,y:0};
     if (event.targetTouches) { //if it is a touch event
       let x = event.targetTouches[0].clientX;
       let y = event.targetTouches[0].clientY;
-      return {
+      pos = {
         x: (x - CTM.e) / CTM.a,
         y: (y - CTM.f) / CTM.d
       };
     }else{
-      return {
+      pos = {
         x: (event.clientX - CTM.e) / CTM.a,
         y: (event.clientY - CTM.f) / CTM.d
       };
     }
+    if (this.isSafari() && this.scale != 1.0){
+      pos.x = pos.x / this.scale;
+      pos.y = pos.y / this.scale;
+    }
+    return pos;
+  }
+  
+  isSafari(){
+    return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
   }
 
   getRatio(){
