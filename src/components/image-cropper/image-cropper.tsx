@@ -52,6 +52,7 @@ export class ImageCropper {
   cvr:CaptureVisionRouter|undefined;
   usingTouchEvent:boolean = false;
   usingQuad = false;
+  previousTouchedTime = 0;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
@@ -279,6 +280,12 @@ export class ImageCropper {
     this.usingTouchEvent = true;
     this.svgMouseDownPoint = undefined;
     this.previousDistance = undefined;
+    let time = new Date().getTime();
+    if ((time - this.previousTouchedTime) < 500) {
+      //double tap
+      this.selectedHandlerIndex = -1;
+    }
+    this.previousTouchedTime = time;
     let coord = this.getMousePosition(e,this.svgElement);
     if (e.touches.length > 1) {
       this.selectedHandlerIndex = -1;
