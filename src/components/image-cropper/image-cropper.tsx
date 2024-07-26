@@ -375,8 +375,8 @@ export class ImageCropper {
     if (this.img) {
       const percentX = this.offsetX / this.img.naturalWidth * 100; 
       const percentY = this.offsetY / this.img.naturalHeight * 100;
-      return `matrix( ${this.scale}, 0, 0, ${this.scale}, ${percentX}, ${percentY} )`
-      //return "scale("+this.scale+") translateX("+percentX+"%)translateY("+percentY+"%)";
+      //return `matrix( ${this.scale}, 0, 0, ${this.scale}, ${percentX}, ${percentY} )`
+      return "scale("+this.scale+") translateX("+percentX+"%)translateY("+percentY+"%)";
     }else{
       return "scale(1.0)";
     }
