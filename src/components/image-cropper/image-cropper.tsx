@@ -31,6 +31,14 @@ export interface CropOptions {
   source?:Blob|string|HTMLImageElement|HTMLCanvasElement;
 }
 
+interface TouchDataStore {
+  scale?:number;
+  originalScale?:number;
+  point1?:Point;
+  point2?:Point;
+  moveable?:boolean;
+}
+
 @Component({
   tag: 'image-cropper',
   styleUrl: 'image-cropper.css',
@@ -40,7 +48,7 @@ export class ImageCropper {
   handlers:number[] = [0,1,2,3,4,5,6,7];
   polygonMouseDown:boolean = false;
   polygonMouseDownPoint:Point = {x:0,y:0};
-  previousDistance:number|undefined = undefined;
+  touchDataStore:TouchDataStore|undefined = undefined;
   svgMouseDownPoint:Point|undefined = undefined;
   handlerMouseDownPoint:Point = {x:0,y:0};
   root:HTMLElement;
@@ -76,8 +84,11 @@ export class ImageCropper {
     this.containerElement.addEventListener("touchmove", (e:TouchEvent) => {
       this.onContainerTouchMove(e);
     })
+    this.containerElement.addEventListener("touchstart", (e:TouchEvent) => {
+      this.onContainerTouchStart(e);
+    })
     this.containerElement.addEventListener("touchend", () => {
-      this.previousDistance = undefined;
+      this.onContainerTouchEnd();
     })
   }
 
@@ -278,7 +289,7 @@ export class ImageCropper {
   onSVGTouchStart(e:TouchEvent) {
     this.usingTouchEvent = true;
     this.svgMouseDownPoint = undefined;
-    this.previousDistance = undefined;
+    this.touchDataStore.point2 = undefined;
     let coord = this.getMousePosition(e,this.svgElement);
     if (e.touches.length > 1) {
       this.selectedHandlerIndex = -1;
@@ -313,24 +324,36 @@ export class ImageCropper {
 
   //handle pinch and zoom
   pinchAndZoom(e:TouchEvent){
-    const distance = this.getDistanceBetweenTwoTouches(e.touches[0],e.touches[1]);
-    if (this.previousDistance) {
-      if ((distance - this.previousDistance)>0) { //zoom
-        this.scale = Math.min(10, this.scale + 0.02);
-      }else{
-        this.scale = Math.max(0.1,this.scale - 0.02);
-      }
-      this.previousDistance = distance;
-    }else{
-      this.previousDistance = distance;
+    if (!this.touchDataStore) {
+      return;
     }
-  }
+    if (!this.touchDataStore.moveable) {
+      return;
+    }
+    if (!this.touchDataStore.point2) {
+      this.touchDataStore.point2 = {x:e.touches[1].clientX,y:e.touches[1].clientY}
+    }
 
-  getDistanceBetweenTwoTouches(touch1:Touch,touch2:Touch){
-    const offsetX = touch1.clientX - touch2.clientX;
-    const offsetY = touch1.clientY - touch2.clientY;
-    const distance = offsetX * offsetX + offsetY + offsetY;
-    return distance;
+    const getDistance = (start, stop) => {
+      return Math.hypot(stop.x - start.x, stop.y - start.y);
+    };
+
+    let zoom = getDistance({
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    }, {
+      x: e.touches[1].clientX,
+      y: e.touches[1].clientY
+    }) /
+    getDistance({
+      x: this.touchDataStore.point1.x,
+      y: this.touchDataStore.point1.y
+    }, {
+      x: this.touchDataStore.point2.x,
+      y: this.touchDataStore.point2.y
+    });
+    let newScale = this.touchDataStore.originalScale * zoom;
+    this.scale = newScale;
   }
 
   onContainerMouseUp(){
@@ -355,6 +378,29 @@ export class ImageCropper {
       this.scale = Math.max(0.1, this.scale - 0.1);
     } 
     e.preventDefault();
+  }
+  
+  onContainerTouchStart(e:TouchEvent) {
+    let touch1 = e.touches[0];
+    let touch2 = e.touches[1];
+    let point1:Point = {x:touch1.clientX,y:touch1.clientY};
+    let point2:Point;
+    if (touch2) {
+      point2 = {x:touch2.clientX,y:touch2.clientY};
+    }
+    this.touchDataStore = {
+      point1:point1,
+      point2:point2,
+      moveable:true,
+      originalScale:this.scale
+    }
+  }
+
+  onContainerTouchEnd() {
+    if (this.touchDataStore) {
+      this.touchDataStore.moveable = false;
+      this.touchDataStore.point2 = undefined;
+    }
   }
 
   onContainerTouchMove(e:TouchEvent) {
