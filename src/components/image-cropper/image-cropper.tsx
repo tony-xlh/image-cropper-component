@@ -289,7 +289,6 @@ export class ImageCropper {
   onSVGTouchStart(e:TouchEvent) {
     this.usingTouchEvent = true;
     this.svgMouseDownPoint = undefined;
-    this.touchDataStore.point2 = undefined;
     let coord = this.getMousePosition(e,this.svgElement);
     if (e.touches.length > 1) {
       this.selectedHandlerIndex = -1;
@@ -381,6 +380,10 @@ export class ImageCropper {
   }
   
   onContainerTouchStart(e:TouchEvent) {
+    this.initTouchDataStore(e);
+  }
+
+  initTouchDataStore(e:TouchEvent){
     let touch1 = e.touches[0];
     let touch2 = e.touches[1];
     let point1:Point = {x:touch1.clientX,y:touch1.clientY};
@@ -553,6 +556,7 @@ export class ImageCropper {
     let coord = this.getMousePosition(e,this.svgElement);
     this.polygonMouseDownPoint.x = coord.x;
     this.polygonMouseDownPoint.y = coord.y;
+    this.initTouchDataStore(e);
   }
 
   onPolygonTouchEnd(e:TouchEvent) {
