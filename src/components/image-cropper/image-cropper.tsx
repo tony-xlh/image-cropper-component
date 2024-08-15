@@ -638,10 +638,10 @@ export class ImageCropper {
         y: (event.clientY - CTM.f) / CTM.d
       };
     }
-    if (this.isSafari() && this.scale != 1.0){
-      pos.x = pos.x / this.scale;
-      pos.y = pos.y / this.scale;
-    }
+    //if (this.isSafari() && this.scale != 1.0){
+    //  pos.x = pos.x / this.scale;
+    //  pos.y = pos.y / this.scale;
+    //}
     return pos;
   }
   
