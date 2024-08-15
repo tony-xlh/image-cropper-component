@@ -60,6 +60,7 @@ export class ImageCropper {
   cvr:CaptureVisionRouter|undefined;
   usingTouchEvent:boolean = false;
   usingQuad = false;
+  previousTouchedTime = 0;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
@@ -289,6 +290,12 @@ export class ImageCropper {
   onSVGTouchStart(e:TouchEvent) {
     this.usingTouchEvent = true;
     this.svgMouseDownPoint = undefined;
+    let time = new Date().getTime();
+    if ((time - this.previousTouchedTime) < 500) {
+      //double tap
+      this.selectedHandlerIndex = -1;
+    }
+    this.previousTouchedTime = time;
     let coord = this.getMousePosition(e,this.svgElement);
     if (e.touches.length > 1) {
       this.selectedHandlerIndex = -1;
@@ -418,6 +425,7 @@ export class ImageCropper {
     if (this.img) {
       const percentX = this.offsetX / this.img.naturalWidth * 100; 
       const percentY = this.offsetY / this.img.naturalHeight * 100;
+      //return `matrix( ${this.scale}, 0, 0, ${this.scale}, ${percentX}, ${percentY} )`
       return "scale("+this.scale+") translateX("+percentX+"%)translateY("+percentY+"%)";
     }else{
       return "scale(1.0)";
@@ -440,9 +448,10 @@ export class ImageCropper {
     //console.log(coord);
     //console.log("svgMouseDownPoint");
     //console.log(this.svgMouseDownPoint);
-
+    //console.log("panSVG");
     //console.log(offsetX)
     //console.log(offsetY)
+
     //e.g img width: 100, offsetX: -10, translateX: -10%
     if (this.draggingmode) {
       if (this.draggingmode == "x-only") {
@@ -615,19 +624,29 @@ export class ImageCropper {
   //Convert the screen coordinates to the SVG's coordinates from https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
   getMousePosition(event:any,svg:any) {
     let CTM = svg.getScreenCTM();
+    let pos = {x:0,y:0};
     if (event.targetTouches) { //if it is a touch event
       let x = event.targetTouches[0].clientX;
       let y = event.targetTouches[0].clientY;
-      return {
+      pos = {
         x: (x - CTM.e) / CTM.a,
         y: (y - CTM.f) / CTM.d
       };
     }else{
-      return {
+      pos = {
         x: (event.clientX - CTM.e) / CTM.a,
         y: (event.clientY - CTM.f) / CTM.d
       };
     }
+    if (this.isSafari() && this.scale != 1.0){
+      pos.x = pos.x / this.scale;
+      pos.y = pos.y / this.scale;
+    }
+    return pos;
+  }
+  
+  isSafari(){
+    return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
   }
 
   getRatio(){
