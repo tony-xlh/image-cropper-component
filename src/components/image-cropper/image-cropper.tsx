@@ -334,7 +334,7 @@ export class ImageCropper {
       this.touchDataStore.point2 = {x:e.touches[1].clientX,y:e.touches[1].clientY}
     }
 
-    const getDistance = (start, stop) => {
+    const getDistance = (start:Point, stop:Point) => {
       return Math.hypot(stop.x - start.x, stop.y - start.y);
     };
 
