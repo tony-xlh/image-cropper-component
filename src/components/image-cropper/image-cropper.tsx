@@ -397,6 +397,7 @@ export class ImageCropper {
   }
 
   onContainerTouchEnd() {
+    this.polygonMouseDown = false;
     if (this.touchDataStore) {
       this.touchDataStore.moveable = false;
       this.touchDataStore.point2 = undefined;
