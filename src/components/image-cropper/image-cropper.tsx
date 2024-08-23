@@ -949,6 +949,10 @@ export class ImageCropper {
     }
   }
 
+  onSVGPointerLeave() {
+    this.svgMouseDownPoint = undefined;
+  }
+
   onPolygonPointerDown(e:PointerEvent){
     if (e.pointerType != "mouse" && !this.usingTouchEvent) {
       this.onPolygonMouseDown(e);
@@ -995,6 +999,7 @@ export class ImageCropper {
             onPointerMove={(e:PointerEvent)=>this.onSVGPointerMove(e)}
             onPointerDown={(e:PointerEvent)=>this.onSVGPointerDown(e)}
             onPointerUp={(e:PointerEvent)=>this.onSVGPointerUp(e)}
+            onPointerLeave={()=>this.onSVGPointerLeave()}
           >
             <image 
               onLoad={()=>this.onImageLoaded()}
