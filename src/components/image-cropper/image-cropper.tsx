@@ -61,6 +61,7 @@ export class ImageCropper {
   usingTouchEvent:boolean = false;
   usingQuad = false;
   previousTouchedTime = 0;
+  previousTouchedPoint = {x:0,y:0};
   scaledAfterDoubleTap = false;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
@@ -542,7 +543,10 @@ export class ImageCropper {
     if (e.touches.length === 1){
       let time = new Date().getTime();
       //double tap
-      if ((time - this.previousTouchedTime) < 500) {
+      let touchedPoint = {x:e.touches[0].clientX,y:e.touches[0].clientY};
+      let offsetX = Math.abs(touchedPoint.x - this.previousTouchedPoint.x);
+      let offsetY = Math.abs(touchedPoint.y - this.previousTouchedPoint.y);
+      if ((time - this.previousTouchedTime) < 500 && offsetX < 10 && offsetY < 10) {
         if (this.selectedHandlerIndex != -1) {
           this.selectedHandlerIndex = -1;
         }else{
@@ -554,7 +558,9 @@ export class ImageCropper {
           this.scaledAfterDoubleTap = !this.scaledAfterDoubleTap;
         }
         this.previousTouchedTime = 0;
+        this.previousTouchedPoint = {x:0,y:0}
       }else {
+        this.previousTouchedPoint = {x:e.touches[0].clientX,y:e.touches[0].clientY}
         this.previousTouchedTime = time;
       }
     }
