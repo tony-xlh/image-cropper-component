@@ -549,8 +549,10 @@ export class ImageCropper {
           }
           this.scaledAfterDoubleTap = !this.scaledAfterDoubleTap;
         }
+        this.previousTouchedTime = 0;
+      }else {
+        this.previousTouchedTime = time;
       }
-      this.previousTouchedTime = time;
     }
   }
 
