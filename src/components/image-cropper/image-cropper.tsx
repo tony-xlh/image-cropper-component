@@ -289,6 +289,7 @@ export class ImageCropper {
   }
 
   onSVGTouchStart(e:TouchEvent) {
+    //console.log("onSVGTouchStart");
     this.usingTouchEvent = true;
     this.svgMouseDownPoint = undefined;
     this.checkDoubleTap(e);
@@ -307,12 +308,15 @@ export class ImageCropper {
   }
 
   onSVGTouchEnd() {
+    //console.log("onSVGTouchEnd");
     this.svgMouseDownPoint = undefined;
   }
 
   onSVGTouchMove(e:TouchEvent) {
+    //console.log("onSVGTouchMove");
     e.stopPropagation();
     e.preventDefault();
+    this.previousTouchedTime = 0;
     if (e.touches.length === 2) {
       this.pinchAndZoom(e);
     }else{
