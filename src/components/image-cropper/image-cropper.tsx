@@ -61,6 +61,7 @@ export class ImageCropper {
   usingTouchEvent:boolean = false;
   usingQuad = false;
   previousTouchedTime = 0;
+  scaledAfterDoubleTap = false;
   @Prop() img?: HTMLImageElement;
   @Prop() rect?: Rect;
   @Prop() quad?: Quad;
@@ -290,12 +291,7 @@ export class ImageCropper {
   onSVGTouchStart(e:TouchEvent) {
     this.usingTouchEvent = true;
     this.svgMouseDownPoint = undefined;
-    let time = new Date().getTime();
-    if ((time - this.previousTouchedTime) < 500) {
-      //double tap
-      this.selectedHandlerIndex = -1;
-    }
-    this.previousTouchedTime = time;
+    this.checkDoubleTap(e);
     let coord = this.getMousePosition(e,this.svgElement);
     if (e.touches.length > 1) {
       this.selectedHandlerIndex = -1;
@@ -538,6 +534,26 @@ export class ImageCropper {
     }
   }
 
+  checkDoubleTap(e:TouchEvent){
+    if (e.touches.length === 1){
+      let time = new Date().getTime();
+      //double tap
+      if ((time - this.previousTouchedTime) < 500) {
+        if (this.selectedHandlerIndex != -1) {
+          this.selectedHandlerIndex = -1;
+        }else{
+          if (this.scaledAfterDoubleTap) {
+            this.scale = this.scale / 2;
+          }else{
+            this.scale = this.scale * 2;
+          }
+          this.scaledAfterDoubleTap = !this.scaledAfterDoubleTap;
+        }
+      }
+      this.previousTouchedTime = time;
+    }
+  }
+
   onPolygonMouseDown(e:MouseEvent){
     e.stopPropagation();
     this.originalPoints = JSON.parse(JSON.stringify(this.points));
@@ -558,6 +574,7 @@ export class ImageCropper {
   onPolygonTouchStart(e:TouchEvent) {
     this.usingTouchEvent = true;
     e.stopPropagation();
+    this.checkDoubleTap(e);
     this.selectedHandlerIndex = -1;
     this.polygonMouseDown = false;
     this.originalPoints = JSON.parse(JSON.stringify(this.points));
