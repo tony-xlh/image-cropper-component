@@ -682,6 +682,7 @@ export class ImageCropper {
     this.scale = 1.0;
     this.offsetX = 0;
     this.offsetY = 0;
+    this.scaledAfterDoubleTap = false;
   }
 
   @Method()
