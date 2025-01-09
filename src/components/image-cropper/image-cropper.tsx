@@ -122,6 +122,8 @@ export class ImageCropper {
         this.restrainPointsInBounds(points,this.img.naturalWidth,this.img.naturalHeight);
       }
       this.points = points;
+    }else{
+      this.points = undefined;
     }
   }
 
@@ -142,6 +144,8 @@ export class ImageCropper {
         this.restrainPointsInBounds(points,this.img.naturalWidth,this.img.naturalHeight);
       }
       this.points = newValue.points;
+    }else{
+      this.points = undefined;
     }
   }
 
